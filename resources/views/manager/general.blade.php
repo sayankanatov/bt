@@ -117,7 +117,7 @@
 				Тел/Факс
 			</label>
 			<div class="col-10">
-				<input type="tel" class="form-control phone_with_ddd" value="{{$kindergarten->tel_code}}" name="telephone" data-mask="+7(0000)00 00 00" data-mask-selectonfocus="true" placeholder="+7(____)__ __ __" />
+				<input type="tel" class="form-control phone_with_ddd" value="{{isset($kindergarten->telephone) ? $kindergarten->telephone : $kindergarten->tel_code}}" name="telephone" data-mask="+7(0000)00 00 00" data-mask-selectonfocus="true" placeholder="+7(____)__ __ __" />
 			</div>
 		</div>
 		<div class="form-group row">

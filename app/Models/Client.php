@@ -57,6 +57,11 @@ class Client extends Authenticatable
         return $this->belongsToMany('App\Models\KinderGarten', 'kindergarten_clients', 'client_id', 'kindergarten_id');
     }
 
+    public function children()
+    {
+        return $this->hasMany('App\Models\Children','client_id');
+    }
+
     /*
     |--------------------------------------------------------------------------
     | SCOPES

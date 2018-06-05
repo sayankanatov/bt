@@ -38,6 +38,11 @@ return [
 	'you_must_add' => 'Вам необходимо еще добавить',
 	'group' => 'группу(ы)',
 	'you_must_edit_general_info' => 'В разделе Общая информация у Вас меньше на',
-	'id_and_tel' => 'ID (telephone number)'
+	'id_and_tel' => 'ID (telephone number)',
+	'child_iin' => 'Child IIN',
+	'add_child' => 'Add child',
+	'child_fio' => 'Child FIO',
+	'show' => 'Show',
+	'parent_fio' => 'Parent FIO',
 
 ];

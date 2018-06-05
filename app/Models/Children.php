@@ -35,9 +35,14 @@ class Children extends Model
     |--------------------------------------------------------------------------
     */
     public function group() 
-        {
-            return $this->belongsToMany('App\Models\Group');
-        }
+    {
+            return $this->belongsTo('App\Models\Group','group_id');
+    }
+
+    public function parent() 
+    {
+            return $this->belongsTo('App\Models\Client','client_id');
+    }
     /*
     |--------------------------------------------------------------------------
     | SCOPES

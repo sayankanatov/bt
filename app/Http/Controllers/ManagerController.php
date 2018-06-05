@@ -106,7 +106,7 @@ class ManagerController extends Controller
 
         $kinder_info = KinderGarten::where('id',$kindergarten->kindergarten_id)->first();
         $kinder_info->type = $request->get('kindergarten_types');
-        //Скрыто в связи с не актуальностью
+        //Скрыто в связи с неактуальностью
         // $kinder_info->iik = $request->input('iik');
         // $kinder_info->bank = $request->get('bank');
         // $kinder_info->bik = $request->input('bik');
@@ -418,6 +418,7 @@ class ManagerController extends Controller
             $group->save();
 
             \Session::flash('message', 'Successfully created group!');
+
             if($request->has('add-group-submit')){
                 return \Redirect('manager/groups');
             }
@@ -461,6 +462,7 @@ class ManagerController extends Controller
     }
 
     public function users(Request $request){
+
         $kindergarten = DB::table('kindergartens')->select('kindergartens.id','kindergartens.group_count')
                         ->join('kindergarten_users','kindergarten_users.kindergarten_id','=','kindergartens.id')
                         ->where('kindergarten_users.user_id',\Auth::user()->id)
@@ -469,16 +471,32 @@ class ManagerController extends Controller
         $groups = DB::table('groups')->select('*')
                     ->where('groups.kindergarten_id',$kindergarten->id)
                     ->get();
+        $group = Group::where('id',$request->input('group_id'))->first();
+
         if($request->has('child-submit')){
+            
+            $parent = new Client();
+            $parent->name = ucwords($request->input('parent_name'));
+            $parent->telephone = $request->input('parent_telephone');
+            $parent->role_name = 'Родитель';
+            $parent->save();
+            $parent->role()->attach(Config::get('constants.roles.parent'));
+
             $children = new Children();
             $children->name = ucwords($request->input('children_name'));
             $children->iin = $request->input('children_iin');
+            $children->group()->associate($group->id);
+            
+            $getParent = Client::where('telephone',$request->input('parent_telephone'))->first();
+            $children->parent()->associate($getParent->id);
+            
             $children->save();
-            $children->group()->attach(8);
+
+            \Session::flash('message', 'Child successfully created!');
         }
         // dd($groups);
 
-        return view('manager.users');
+        return view('manager.users',compact('groups'));
     }
 
 }

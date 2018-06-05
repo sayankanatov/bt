@@ -34,7 +34,10 @@ class Group extends Model
     | RELATIONS
     |--------------------------------------------------------------------------
     */
-    
+    public function children()
+    {
+        return $this->hasMany('App\Models\Children','group_id');
+    }
     /*
     |--------------------------------------------------------------------------
     | SCOPES

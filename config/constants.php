@@ -10,7 +10,8 @@ return [
 		'nurse' => 6,
 		'accountant' => 7,
 		'storekeeper' => 8,
-		'mentor' => 9
+		'mentor' => 9,
+		'parent' => 10
 	],
 	'paginate' => [
 		'kindergarten' => 10,
