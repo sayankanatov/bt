@@ -20,6 +20,12 @@
     <p>@lang('messages.you_must_edit_general_info') {{$groups->count() - $kindergarten->group_count}} @lang('messages.group')</p>
   </div>
   @endif
+  
+  <div class="page-header">
+    <h3>
+      @lang('messages.groups')
+    </h3>
+  </div>
   <!-- TEST Start -->
 @if(!empty($groups))
 <div class="table-responsive">
@@ -85,7 +91,7 @@
                   <label>
                     @lang('messages.title')
                   </label>
-                  <input type="text" class="form-control" name="group_name" required="true" />
+                  <input type="text" class="form-control" name="group_name" required="required" />
 
                   <label>
                     @lang('messages.category')
@@ -101,7 +107,7 @@
                   <label>
                     @lang('messages.group_count')
                   </label>
-                  <input type="number" class="form-control" name="child_count" required="true" />
+                  <input type="number" class="form-control" name="child_count" required="required" />
                   <label>
                     @lang('messages.mentors')
                   </label>

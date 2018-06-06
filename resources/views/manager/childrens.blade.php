@@ -34,8 +34,8 @@
           <td>
             <a id="modal-2{{$group->id}}" href="#modal-container-2{{$group->id}}" role="button" class="btn btn-info" data-toggle="modal">@lang('messages.show')</a>
 			
-			<div class="modal fade" id="modal-container-2{{$group->id}}" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-				<div class="modal-dialog" role="document">
+			<div class="modal fade bd-example-modal-lg" id="modal-container-2{{$group->id}}" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+				<div class="modal-dialog modal-lg" role="document">
 					<div class="modal-content">
 						<div class="modal-header">
 							<h5 class="modal-title" id="myModalLabel">
@@ -47,27 +47,35 @@
 						</div>
 						<div class="modal-body">
 							<div class="table-responsive">
-							    <table id="mytable" class="table table-bordred table-striped">
-							    	<thead>
-							    		<th>1</th>
-							    		<th>2</th>
-							    		<th>3</th>
+							    <table class="table table-bordred table-striped">
+							    	<thead class="table-success">
+							    		<th>№</th>
+							    		<th>@lang('messages.child_fio')</th>
+							    		<th>@lang('messages.child_iin')</th>
+							    		<th>@lang('messages.parent_fio')</th>
+							    		<th>@lang('messages.telephone')</th>
+							    		<th>@lang('messages.edit')</th>
 							    	</thead>
 							    	<tbody>
-							    		<td>1</td>
-							    		<td>3</td>
-							    		<td>4</td>
+							    		@foreach($group->children as $key => $children)
+							    		<tr class="table-warning">
+							    			<td>{{++$key}}</td>
+							    			<td>{{$children->name}}</td>
+							    			<td>{{$children->iin}}</td>
+							    			<td>{{$children->parent->name}}</td>
+							    			<td>{{$children->parent->telephone}}</td>
+							    			<td>
+							    				<a class="btn btn-small btn-info" href="{{ action('ManagerController@editChild',$children->id) }}">@lang('messages.edit')</a>
+							    			</td>
+							    		</tr>
+							    		@endforeach
 							    	</tbody>
 							    </table>
 							</div>
 						</div>
 						<div class="modal-footer">
-							 
-							<button type="button" class="btn btn-primary">
-								Save changes
-							</button> 
 							<button type="button" class="btn btn-secondary" data-dismiss="modal">
-								Close
+								@lang('messages.back')
 							</button>
 						</div>
 					</div>
@@ -95,19 +103,19 @@
                   		<label>
                     	@lang('messages.child_fio')
                   		</label>
-                  	<input type="text" class="form-control" name="children_name" required="true" />
+                  	<input type="text" class="form-control" name="children_name" required="required" />
 						<label>
                     	@lang('messages.child_iin')
                   		</label>
-                  	<input type="tel" class="form-control" name="children_iin" required="true" data-mask="0000 0000 0000" data-mask-selectonfocus="true"/>
+                  	<input type="tel" class="form-control" name="children_iin" required="required" data-mask="000000000000" data-mask-selectonfocus="true"/>
                   	<label>
                     	@lang('messages.parent_fio')
                   		</label>
-                  	<input type="text" class="form-control" name="parent_name" required="true" />
+                  	<input type="text" class="form-control" name="parent_name" required="required" />
                   	<label>
                     	@lang('messages.telephone')
                   		</label>
-                  	<input type="tel" class="form-control" name="parent_telephone" required="true" data-mask="+7(000)000 00 00" data-mask-selectonfocus="true" placeholder="+7(___)__ __ __"/>
+                  	<input type="tel" class="form-control" name="parent_telephone" required="required" data-mask="+7(000)000 00 00" data-mask-selectonfocus="true" placeholder="+7(___)__ __ __"/>
                   	<input type="hidden" name="group_id" value="{{$group->id}}">
              
                 	</div>

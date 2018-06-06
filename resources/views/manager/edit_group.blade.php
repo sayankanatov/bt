@@ -5,6 +5,15 @@
       @include('includes.head-manager')  
 </div>
 <div class="col-md-12">
+	@if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+	@endif
 	<div class="page-header">
 		<h3>
 			@lang('messages.edit')
@@ -17,9 +26,9 @@
 		@csrf
 		<div class="form-group">				 
 			<label>
-				Name
+				@lang('messages.title')
 			</label>
-			<input type="text" class="form-control" name="group_name" value="{{$group->title}}" required="true"/>
+			<input type="text" class="form-control" name="group_name" value="{{$group->title}}" required="required"/>
 		</div>
 		<div class="form-group">				 
 			<label>
@@ -37,7 +46,7 @@
 			<label>
                 @lang('messages.group_count')
             </label>
-            <input type="number" class="form-control" name="child_count" value="{{isset($group->child_count) ? $group->child_count : ''}}" required="true" />
+            <input type="number" class="form-control" name="child_count" value="{{isset($group->child_count) ? $group->child_count : ''}}" required="required" />
 		</div>
 		<div class="form-group">
 			<label>

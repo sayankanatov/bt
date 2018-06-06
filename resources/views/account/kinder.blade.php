@@ -82,19 +82,19 @@
                   <label for="exampleInputKinderGarten">
                     @lang('messages.title')
                   </label>
-                  <input type="text" class="form-control" id="exampleInputKinderGarten" name="kindergarten_name" required="true" />
+                  <input type="text" class="form-control" id="exampleInputKinderGarten" name="kindergarten_name" required="required" />
                   <label for="exampleInputKinderGartenNumber">
                     @lang('messages.kinder_number')
                   </label>
-                  <input type="number" class="form-control" id="exampleInputKinderGartenNumber" name="kindergarten_number" required="true" />
+                  <input type="number" class="form-control" id="exampleInputKinderGartenNumber" name="kindergarten_number" required="required" />
                   <label for="exampleInputUserEmail">
                     @lang('messages.email')
                   </label>
-                  <input type="email" class="form-control" id="exampleInputUserEmail" name="email" required="true" />
+                  <input type="email" class="form-control" id="exampleInputUserEmail" name="email" required="required" />
                   <!-- <label for="exampleInputUserTel">
                     @lang('messages.number')
                   </label>
-                  <input type="number" class="form-control" id="exampleInputUserTel" name="tel" required="true" /> -->
+                  <input type="number" class="form-control" id="exampleInputUserTel" name="tel" required="required" /> -->
                 </div>
                 <button type="submit" class="btn btn-primary">
                   @lang('messages.add')

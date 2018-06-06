@@ -36,7 +36,7 @@ class ManagerController extends Controller
         $general_info_link = '/manager/general';
         $roles_link = '/manager/roles';
         $groups_link = '/manager/groups';
-        $user_base_link = '/manager/users';
+        $user_base_link = '/manager/childrens';
 
         return view('manager.index',compact(
             'general_info_link',
@@ -252,7 +252,7 @@ class ManagerController extends Controller
         if($request->input('tel1') && !$deputy){
             $client = new Client();
             $client->telephone = $request->input('tel1');
-            $client->name = ucwords($request->input('fio1'));
+            $client->name = mb_convert_case($request->input('fio1'),MB_CASE_TITLE,"UTF-8");
             $client->role_name = $request->input('role_name1');
             $client->save();
             //Устанавливаем связь с садиком
@@ -263,7 +263,7 @@ class ManagerController extends Controller
         }elseif(isset($deputy) && $request->input('tel1')) {
             $client = Client::where('id',$deputy->client_id)->first();
             $client->telephone = $request->input('tel1');
-            $client->name = ucwords($request->input('fio1'));
+            $client->name = mb_convert_case($request->input('fio1'),MB_CASE_TITLE,"UTF-8");
             $client->role_name = $request->input('role_name1');
             $client->save();
         }
@@ -271,7 +271,7 @@ class ManagerController extends Controller
         if($request->input('tel2') && !$methodist){
             $client = new Client();
             $client->telephone = $request->input('tel2');
-            $client->name = ucwords($request->input('fio2'));
+            $client->name = mb_convert_case($request->input('fio2'),MB_CASE_TITLE,"UTF-8");
             $client->role_name = $request->input('role_name2');
             $client->save();
             //Устанавливаем связь с садиком
@@ -282,7 +282,7 @@ class ManagerController extends Controller
         }elseif(isset($methodist) && $request->input('tel2')){
             $client = Client::where('id',$methodist->client_id)->first();
             $client->telephone = $request->input('tel2');
-            $client->name = ucwords($request->input('fio2'));
+            $client->name = mb_convert_case($request->input('fio2'),MB_CASE_TITLE,"UTF-8");
             $client->role_name = $request->input('role_name2');
             $client->save();
         }
@@ -290,7 +290,7 @@ class ManagerController extends Controller
         if($request->input('tel3') && !$nurse){
             $client = new Client();
             $client->telephone = $request->input('tel3');
-            $client->name = ucwords($request->input('fio3'));
+            $client->name = mb_convert_case($request->input('fio3'),MB_CASE_TITLE,"UTF-8");
             $client->role_name = $request->input('role_name3');
             $client->save();
             //Устанавливаем связь с садиком
@@ -301,7 +301,7 @@ class ManagerController extends Controller
         }elseif(isset($nurse) && $request->input('tel3')){
             $client = Client::where('id',$nurse->client_id)->first();
             $client->telephone = $request->input('tel3');
-            $client->name = ucwords($request->input('fio3'));
+            $client->name = mb_convert_case($request->input('fio3'),MB_CASE_TITLE,"UTF-8");
             $client->role_name = $request->input('role_name3');
             $client->save();
         }
@@ -309,7 +309,7 @@ class ManagerController extends Controller
         if($request->input('tel4') && !$accountant){
             $client = new Client();
             $client->telephone = $request->input('tel4');
-            $client->name = ucwords($request->input('fio4'));
+            $client->name = mb_convert_case($request->input('fio4'),MB_CASE_TITLE,"UTF-8");
             $client->role_name = $request->input('role_name4');
             $client->save();
             //Устанавливаем связь с садиком
@@ -320,7 +320,7 @@ class ManagerController extends Controller
         }elseif(isset($accountant) && $request->input('tel4')){
             $client = Client::where('id',$accountant->client_id)->first();
             $client->telephone = $request->input('tel4');
-            $client->name = ucwords($request->input('fio4'));
+            $client->name = mb_convert_case($request->input('fio4'),MB_CASE_TITLE,"UTF-8");
             $client->role_name = $request->input('role_name4');
             $client->save();
         }
@@ -328,7 +328,7 @@ class ManagerController extends Controller
         if($request->input('tel5') && !$storekeeper){
             $client = new Client();
             $client->telephone = $request->input('tel5');
-            $client->name = ucwords($request->input('fio5'));
+            $client->name = mb_convert_case($request->input('fio5'),MB_CASE_TITLE,"UTF-8");
             $client->role_name = $request->input('role_name5');
             $client->save();
             //Устанавливаем связь с садиком
@@ -339,7 +339,7 @@ class ManagerController extends Controller
         }elseif(isset($storekeeper) && $request->input('tel5')) {
             $client = Client::where('id',$storekeeper->client_id)->first();
             $client->telephone = $request->input('tel5');
-            $client->name = ucwords($request->input('fio5'));
+            $client->name = mb_convert_case($request->input('fio5'),MB_CASE_TITLE,"UTF-8");
             $client->role_name = $request->input('role_name5');
             $client->save();
         }
@@ -347,7 +347,7 @@ class ManagerController extends Controller
         if($request->input('tel6')){
             $client = new Client();
             $client->telephone = $request->input('tel6');
-            $client->name = ucwords($request->input('fio6'));
+            $client->name = mb_convert_case($request->input('fio6'),MB_CASE_TITLE,"UTF-8");
             $client->role_name = $request->input('role_name6');
             $client->save();
             //Устанавливаем связь с садиком
@@ -358,7 +358,7 @@ class ManagerController extends Controller
 
         if($request->input('mentor_tel')){
             $mentor = new Client();
-            $mentor->name = ucwords($request->input('mentor_fio'));
+            $mentor->name = mb_convert_case($request->input('mentor_fio'),MB_CASE_TITLE,"UTF-8");
             $mentor->telephone = $request->input('mentor_tel');
             $mentor->save();
             $mentor->kindergarten()->attach($kindergarten->id);
@@ -370,7 +370,7 @@ class ManagerController extends Controller
             if($request->input('mentortel_'.$mentor->id)){
                 $exist_mentor = Client::where('id',$mentor->id)->first();
                 $exist_mentor->telephone = $request->input('mentortel_'.$mentor->id);
-                $exist_mentor->name = ucwords($request->input('mentorfio_'.$mentor->id));
+                $exist_mentor->name = mb_convert_case($request->input('mentorfio_'.$mentor->id),MB_CASE_TITLE,"UTF-8");
                 $exist_mentor->save();
             }
         }
@@ -461,32 +461,33 @@ class ManagerController extends Controller
         return \Redirect('manager/groups');
     }
 
-    public function users(Request $request){
+    public function childrens(Request $request){
 
         $kindergarten = DB::table('kindergartens')->select('kindergartens.id','kindergartens.group_count')
                         ->join('kindergarten_users','kindergarten_users.kindergarten_id','=','kindergartens.id')
                         ->where('kindergarten_users.user_id',\Auth::user()->id)
                         ->first();
 
-        $groups = DB::table('groups')->select('*')
-                    ->where('groups.kindergarten_id',$kindergarten->id)
-                    ->get();
-        $group = Group::where('id',$request->input('group_id'))->first();
+        // $groups = DB::table('groups')->select('*')
+                        // ->where('groups.kindergarten_id',$kindergarten->id)->get();
+        $groups = Group::where('kindergarten_id',$kindergarten->id)->get();
+        // dd($groups);
+        $getGroup = Group::where('id',$request->input('group_id'))->first();
 
         if($request->has('child-submit')){
             
             $parent = new Client();
-            $parent->name = ucwords($request->input('parent_name'));
+            $parent->name = mb_convert_case($request->input('parent_name'),MB_CASE_TITLE,"UTF-8");
             $parent->telephone = $request->input('parent_telephone');
             $parent->role_name = 'Родитель';
             $parent->save();
             $parent->role()->attach(Config::get('constants.roles.parent'));
 
             $children = new Children();
-            $children->name = ucwords($request->input('children_name'));
+            $children->name = mb_convert_case($request->input('children_name'),MB_CASE_TITLE,"UTF-8");
             $children->iin = $request->input('children_iin');
-            $children->group()->associate($group->id);
-            
+            $children->group()->associate($getGroup->id);
+
             $getParent = Client::where('telephone',$request->input('parent_telephone'))->first();
             $children->parent()->associate($getParent->id);
             
@@ -494,9 +495,40 @@ class ManagerController extends Controller
 
             \Session::flash('message', 'Child successfully created!');
         }
+        
         // dd($groups);
 
-        return view('manager.users',compact('groups'));
+        return view('manager.childrens',compact('groups'));
+    }
+
+    public function editChild($id){
+
+        $children = Children::find($id);
+        // dd($children);
+        $parents = Client::where('id',$children->client_id)->get();
+
+        return view('manager.edit_child',compact('children','parents'));
+    }
+
+    public function updateChild(Request $request, $id){
+
+        // get the children and his parents
+        $children = Children::find($id);
+        $children->name = mb_convert_case($request->input('child_name'),MB_CASE_TITLE,"UTF-8" );
+        $children->iin = $request->input('child_iin');
+        $children->save();
+
+        $parents = Client::where('id',$children->client_id)->get();
+        foreach ($parents as $key => $parent) {
+            # code...
+            $parent->name = mb_convert_case($request->input('parent_name'.++$key),MB_CASE_TITLE,"UTF-8" );
+            $parent->telephone = $request->input('parent_telephone'.++$key);
+            $parent->save();
+        }
+
+        \Session::flash('message', 'Successfully updated!');
+
+        return \Redirect('manager/childrens');
     }
 
 }

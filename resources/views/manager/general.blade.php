@@ -61,7 +61,7 @@
 				ИИК
 			</label>
 			<div class="col-10">
-				<input type="text" class="form-control" value="{{$kinder_info->iik}}" id="exampleInputIIK" name="iik" required="true" />
+				<input type="text" class="form-control" value="{{$kinder_info->iik}}" id="exampleInputIIK" name="iik" required="required" />
 			</div>
 		</div>
 		@if(!empty($banks))
@@ -81,7 +81,7 @@
 				БИН
 			</label>
 			<div class="col-10">
-				<input type="text" class="form-control" id="exampleInputBIN" value="{{$kinder_info->bin}}" name="bin" required="true"/>
+				<input type="text" class="form-control" id="exampleInputBIN" value="{{$kinder_info->bin}}" name="bin" required="required"/>
 			</div>
 		</div> -->
 		<h4>
@@ -109,7 +109,7 @@
 				Адрес
 			</label>
 			<div class="col-10">
-				<input type="text" class="form-control" id="exampleInputAddress" value="{{$kinder_info->address}}" name="address" required="true"/>
+				<input type="text" class="form-control" id="exampleInputAddress" value="{{$kinder_info->address}}" name="address" required="required"/>
 			</div>
 		</div>
 		<div class="form-group row">
@@ -184,7 +184,7 @@
 		<div class="form-group row">
 			<label for="exampleInputGroup" class="col-2 col-form-label">Количество групп</label>
 			<div class="col-10">
-			<input type="number" class="form-control" id="exampleInputGroup" value="{{$kinder_info->group_count}}" name="group_count" required="true"/>
+			<input type="number" class="form-control" id="exampleInputGroup" value="{{$kinder_info->group_count}}" name="group_count" required="required"/>
 			</div>
 		</div>
 		
@@ -193,7 +193,7 @@
 				Проектная мощность
 			</label>
 			<div class="col-10">
-				<input type="number" class="form-control" id="exampleInputCapacity" name="project_capacity" value="{{$kinder_info->project_capacity}}" required="true"/>
+				<input type="number" class="form-control" id="exampleInputCapacity" name="project_capacity" value="{{$kinder_info->project_capacity}}" required="required"/>
 			</div>
 		</div>
 

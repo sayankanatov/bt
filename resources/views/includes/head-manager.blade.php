@@ -14,7 +14,7 @@
                 <a class="btn btn-success" href="{{url('/manager/groups')}}">@lang('messages.groups')</a>
             </li>
             <li class="nav-item">
-                <a class="btn btn-warning" href="{{url('/manager/users')}}">@lang('messages.users')</a>
+                <a class="btn btn-warning" href="{{url('/manager/childrens')}}">@lang('messages.users')</a>
             </li>
         </ul>
         

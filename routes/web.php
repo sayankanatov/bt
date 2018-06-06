@@ -33,6 +33,7 @@ Route::group(['prefix' => App\Http\Middleware\LocaleMiddleware::getLocale()], fu
 
     Route::group(['prefix'=>'manager', 'as'=>'manager.'], function(){
         Route::get('/', 'ManagerController@index')->name('manager');
+
         Route::get('/general', 'ManagerController@general');
         Route::post('/general', 'ManagerController@storeGeneral');
 
@@ -41,14 +42,14 @@ Route::group(['prefix' => App\Http\Middleware\LocaleMiddleware::getLocale()], fu
         
         Route::get('/groups', ['as' => 'groups','uses' => 'ManagerController@groups']);
         Route::post('/groups', ['as' => 'groups','uses' => 'ManagerController@groups']);
-
         Route::get('/groups/{id}', 'ManagerController@editGroup');
-        Route::post('/groups/{id}', 'ManagerController@editGroup');
         Route::post('/groups/{id}', 'ManagerController@updateGroup');
 
 
-        Route::get('/users', 'ManagerController@users');
-        Route::post('/users', 'ManagerController@users');
+        Route::get('/childrens', ['as' => 'childrens','uses' => 'ManagerController@childrens']);
+        Route::post('/childrens', ['as' => 'childrens','uses' => 'ManagerController@childrens']);
+        Route::get('/childrens/{id}', 'ManagerController@editChild');
+        Route::post('/childrens/{id}','ManagerController@updateChild');
     });
 });
 

@@ -26,7 +26,11 @@ class GroupRequest extends FormRequest
     public function rules()
     {
         return [
-            // 'name' => 'required|min:5|max:255'
+            // 'title' => 'required|min:5|max:255',
+            // 'category' => 'required',
+            // 'child_count' => 'required',
+            // 'first_mentor_id' => 'required',
+            // 'second_mentor_id' => 'required',
         ];
     }
 
@@ -51,6 +55,7 @@ class GroupRequest extends FormRequest
     {
         return [
             //
+            // 'title' => 'Title field is required!!!!'
         ];
     }
 }
