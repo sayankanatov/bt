@@ -14,6 +14,11 @@
         </ul>
     </div>
 	@endif
+	@if (\Session::has('oops'))
+      <div class="alert alert-danger">
+        <p>{{ \Session::get('oops') }}</p>
+      </div><br />
+  	@endif
 	<div class="page-header">
 		<h3>
 			@lang('messages.edit')

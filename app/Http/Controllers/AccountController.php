@@ -40,6 +40,7 @@ class AccountController extends Controller
 
     public function index()
     {
+        //Ссылки в меню координатора
         $kindergarten_link = '/account/kindergarten';
         $report_link = '/account/report';
 
@@ -68,7 +69,7 @@ class AccountController extends Controller
 
         //Создаем обьект юзера
         $user = new User();
-        $user->name = City::where('id',$city)->pluck('description')->first().rand(1,999);
+        $user->name = City::where('id',$city)->pluck('description')->first().$kindergarten->num;
         $user->email = $request->input('email');
         $password = str_random(8);
         $user->password = Hash::make($password);
@@ -115,7 +116,7 @@ class AccountController extends Controller
         ));
     }
 
-    // edit item
+    // edit kindergarten
     public function edit($id)
     {
         $kindergarten = KinderGarten::find($id);

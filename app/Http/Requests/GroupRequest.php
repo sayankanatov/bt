@@ -26,11 +26,8 @@ class GroupRequest extends FormRequest
     public function rules()
     {
         return [
-            // 'title' => 'required|min:5|max:255',
-            // 'category' => 'required',
-            // 'child_count' => 'required',
-            // 'first_mentor_id' => 'required',
-            // 'second_mentor_id' => 'required',
+            'title' => 'required',
+            // 'title' => 'required|min:3|max:100',
         ];
     }
 

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\GroupRequest;
+use Illuminate\Database\QueryException;
 
 use App\Models\KinderGarten;
 use App\Models\KinderGartenUser;
@@ -32,7 +34,7 @@ class ManagerController extends Controller
      */
     public function index()
     {
-        //
+        // Ссылки на меню менеджера
         $general_info_link = '/manager/general';
         $roles_link = '/manager/roles';
         $groups_link = '/manager/groups';
@@ -68,13 +70,9 @@ class ManagerController extends Controller
             '09:00:00' => '09:00',
         );
 
-        // $counts = array(
-        //     '0' => 4, '1' => 5, '2' => 6, '3' => 7, '4' => 8, '5' => 9, '6' => 10, '7' => 11,
-        //     '8' => 12, '9' => 13, '10' => 14, '11' => 15, '12' => 16, '13' => 17, '14' => 18, '15' => 19, '16' => 20,
-        // );
-
         $categories = array('ГККП' => 'ГККП','КГКП' => 'КГКП');
 
+        //get kindergarten
         $kindergarten = DB::table('kindergartens')
                         ->select('kindergartens.name','kindergartens.category','kindergartens.num','kindergartens.telephone','users.email','kindergarten_users.kindergarten_id','cities.description','cities.region_ru','cities.tel_code')
                         ->join('kindergarten_users','kindergarten_users.kindergarten_id','=','kindergartens.id')
@@ -86,10 +84,11 @@ class ManagerController extends Controller
 
         // dd($kindergarten);
 
+        //get variables
         $kindergarten_types = KinderGartenType::all();
         $banks = Bank::all();
         $kindergarten_langs = KinderGartenLang::all();
-
+        // 
         $kinder_info = KinderGarten::where('id',$kindergarten->kindergarten_id)->first();
 
         return view('manager.general',compact('kindergarten', 'kindergarten_types', 'banks', 'kindergarten_langs', 'worktime_start','worktime_end','child_reception','kinder_info','categories'));
@@ -97,6 +96,7 @@ class ManagerController extends Controller
 
     public function storeGeneral(Request $request){
 
+        //get our kindergarten
         $kindergarten = DB::table('kindergartens')
                         ->select('kindergarten_users.kindergarten_id')
                         ->join('kindergarten_users','kindergarten_users.kindergarten_id','=','kindergartens.id')
@@ -104,6 +104,7 @@ class ManagerController extends Controller
                         ->where('kindergarten_users.user_id',\Auth::user()->id)
                         ->first();
 
+        //получаем детсад для редактирования
         $kinder_info = KinderGarten::where('id',$kindergarten->kindergarten_id)->first();
         $kinder_info->type = $request->get('kindergarten_types');
         //Скрыто в связи с неактуальностью
@@ -136,7 +137,7 @@ class ManagerController extends Controller
                         ->join('kindergarten_users','kindergarten_users.kindergarten_id','=','kindergartens.id')
                         ->where('kindergarten_users.user_id',\Auth::user()->id)
                         ->first();
-
+        //Получаем заведующего
         $deputy = DB::table('clients')
                     ->select('clients.name','clients.telephone','clients.role_name','roles.description')
                     ->join('role_clients','role_clients.client_id','=','clients.id')
@@ -145,6 +146,7 @@ class ManagerController extends Controller
                     ->where('kindergarten_clients.kindergarten_id',$kindergarten->id)
                     ->where('role_clients.role_id',Config::get('constants.roles.deputy'))
                     ->first();
+        //Получаем методиста
         $methodist = DB::table('clients')
                     ->select('clients.name','clients.telephone','clients.role_name','roles.description')
                     ->join('role_clients','role_clients.client_id','=','clients.id')
@@ -153,6 +155,7 @@ class ManagerController extends Controller
                     ->where('kindergarten_clients.kindergarten_id',$kindergarten->id)
                     ->where('role_clients.role_id',Config::get('constants.roles.methodist'))
                     ->first();
+        //Получаем медсестру
         $nurse = DB::table('clients')
                     ->select('clients.name','clients.telephone','clients.role_name','roles.description')
                     ->join('role_clients','role_clients.client_id','=','clients.id')
@@ -161,6 +164,7 @@ class ManagerController extends Controller
                     ->where('kindergarten_clients.kindergarten_id',$kindergarten->id)
                     ->where('role_clients.role_id',Config::get('constants.roles.nurse'))
                     ->first();
+        //Получаем бухгалтера
         $accountant = DB::table('clients')
                     ->select('clients.name','clients.telephone','clients.role_name','roles.description')
                     ->join('role_clients','role_clients.client_id','=','clients.id')
@@ -169,6 +173,7 @@ class ManagerController extends Controller
                     ->where('kindergarten_clients.kindergarten_id',$kindergarten->id)
                     ->where('role_clients.role_id',Config::get('constants.roles.accountant'))
                     ->first();
+        //Получаем кладовщика
         $storekeeper = DB::table('clients')
                     ->select('clients.name','clients.telephone','clients.role_name','roles.description')
                     ->join('role_clients','role_clients.client_id','=','clients.id')
@@ -177,6 +182,7 @@ class ManagerController extends Controller
                     ->where('kindergarten_clients.kindergarten_id',$kindergarten->id)
                     ->where('role_clients.role_id',Config::get('constants.roles.storekeeper'))
                     ->first();
+        //Получаем воспитателя
         $mentor = DB::table('clients')
                     ->select('clients.name','clients.telephone','clients.role_name','roles.description')
                     ->join('role_clients','role_clients.client_id','=','clients.id')
@@ -185,7 +191,7 @@ class ManagerController extends Controller
                     ->where('kindergarten_clients.kindergarten_id',$kindergarten->id)
                     ->where('role_clients.role_id',Config::get('constants.roles.mentor'))
                     ->first();
-        
+        // Получаем всех воспитателей
         $mentors = DB::table('clients')
                 ->select('clients.name','clients.telephone','roles.name as role_name','roles.description','clients.id')
                 ->join('role_clients','role_clients.client_id','=','clients.id')
@@ -205,6 +211,7 @@ class ManagerController extends Controller
                         ->join('kindergarten_users','kindergarten_users.kindergarten_id','=','kindergartens.id')
                         ->where('kindergarten_users.user_id',\Auth::user()->id)
                         ->first();
+        //Получаем заведующего
         $deputy = DB::table('clients')
                     ->select('*')
                     ->join('role_clients','role_clients.client_id','=','clients.id')
@@ -212,6 +219,7 @@ class ManagerController extends Controller
                     ->where('kindergarten_clients.kindergarten_id',$kindergarten->id)
                     ->where('role_clients.role_id',Config::get('constants.roles.deputy'))
                     ->first();
+        //Получаем методиста
         $methodist = DB::table('clients')
                     ->select('*')
                     ->join('role_clients','role_clients.client_id','=','clients.id')
@@ -219,6 +227,7 @@ class ManagerController extends Controller
                     ->where('kindergarten_clients.kindergarten_id',$kindergarten->id)
                     ->where('role_clients.role_id',Config::get('constants.roles.methodist'))
                     ->first();
+        //Получаем медсестру
         $nurse = DB::table('clients')
                     ->select('*')
                     ->join('role_clients','role_clients.client_id','=','clients.id')
@@ -226,6 +235,7 @@ class ManagerController extends Controller
                     ->where('kindergarten_clients.kindergarten_id',$kindergarten->id)
                     ->where('role_clients.role_id',Config::get('constants.roles.nurse'))
                     ->first();
+        //Получаем бухгалтера
         $accountant = DB::table('clients')
                     ->select('*')
                     ->join('role_clients','role_clients.client_id','=','clients.id')
@@ -233,6 +243,7 @@ class ManagerController extends Controller
                     ->where('kindergarten_clients.kindergarten_id',$kindergarten->id)
                     ->where('role_clients.role_id',Config::get('constants.roles.accountant'))
                     ->first();
+        //Получаем кладовщика
         $storekeeper = DB::table('clients')
                     ->select('*')
                     ->join('role_clients','role_clients.client_id','=','clients.id')
@@ -240,6 +251,7 @@ class ManagerController extends Controller
                     ->where('kindergarten_clients.kindergarten_id',$kindergarten->id)
                     ->where('role_clients.role_id',Config::get('constants.roles.storekeeper'))
                     ->first();
+        //Получаем всех воспитателей
         $mentors = DB::table('clients')
                 ->select('clients.name','clients.telephone','roles.name as role_name','roles.description','clients.id')
                 ->join('role_clients','role_clients.client_id','=','clients.id')
@@ -248,7 +260,8 @@ class ManagerController extends Controller
                 ->where('kindergarten_clients.kindergarten_id',$kindergarten->id)
                 ->where('role_clients.role_id',Config::get('constants.roles.mentor'))
                 ->get();
-
+        //Если есть request и нет заведущего то создаем его, иначе редактируем существующего
+        // По аналогии создаем или редактируем остальных участников
         if($request->input('tel1') && !$deputy){
             $client = new Client();
             $client->telephone = $request->input('tel1');
@@ -364,7 +377,7 @@ class ManagerController extends Controller
             $mentor->kindergarten()->attach($kindergarten->id);
             $mentor->role()->attach(Config::get('constants.roles.mentor'));
         }
-
+        // Редактируем всех воспитателей внутри foreach
         foreach ($mentors as $mentor) {
             # code...
             if($request->input('mentortel_'.$mentor->id)){
@@ -382,11 +395,13 @@ class ManagerController extends Controller
 
     public function groups(Request $request)
     {
+        //get kindergarten
         $kindergarten = DB::table('kindergartens')->select('kindergartens.id','kindergartens.group_count')
                         ->join('kindergarten_users','kindergarten_users.kindergarten_id','=','kindergartens.id')
                         ->where('kindergarten_users.user_id',\Auth::user()->id)
                         ->first();
 
+        //get all groups
         $groups = DB::table('groups')->select('*')
                     ->where('groups.kindergarten_id',$kindergarten->id)
                     ->get();
@@ -402,9 +417,7 @@ class ManagerController extends Controller
                 ->where('kindergarten_clients.kindergarten_id',$kindergarten->id)
                 ->where('role_clients.role_id',Config::get('constants.roles.mentor'))
                 ->get();
-
-        // $child_counts = array(0 => 10, 1 => 15, 2 => 20, 3 => 25, 4 => 30, 5 => 35, 6 => 40, 7 => 45, 8 => 50);
-
+        //Создаем группу
         if(!empty($request->input('group_name')) ) {
 
             $group = new Group();
@@ -429,7 +442,9 @@ class ManagerController extends Controller
 
     public function editGroup($id){
 
+        //get group for edit
         $group = Group::find($id);
+
         $mentors = DB::table('clients')
                 ->select('clients.name','clients.telephone','roles.name as role_name','roles.description','clients.id')
                 ->join('role_clients','role_clients.client_id','=','clients.id')
@@ -446,21 +461,33 @@ class ManagerController extends Controller
 
     public function updateGroup(Request $request, $id){
 
-        // get the group
-        $group = Group::find($id);
-        $group->title = $request->input('group_name');
-        $group->category = $request->get('group_category');
-        $group->child_count = $request->get('child_count');
-        $group->first_mentor_id = $request->get('first_mentor');
-        $group->second_mentor_id = $request->get('second_mentor');
+        // get the group for update
+        try{
+            $group = Group::find($id);
+            $group->title = $request->input('group_name');
+            $group->category = $request->get('group_category');
+            $group->child_count = $request->get('child_count');
+            $group->first_mentor_id = $request->get('first_mentor');
+            $group->second_mentor_id = $request->get('second_mentor');
 
-        $group->save();
+            $group->save();
+
+        }catch(QueryException $e){
+            \Session::flash('oops', 'Sorry something went worng. Please try again!');
+            return \Redirect('manager/groups/'.$group->id);
+        }
+        // $request->validate([
+        //     'title' => 'filled',
+        // ]);
 
         \Session::flash('message', 'Successfully updated!');
 
         return \Redirect('manager/groups');
     }
 
+/**
+* Display childrens in all groups for adding and updating
+**/ 
     public function childrens(Request $request){
 
         $kindergarten = DB::table('kindergartens')->select('kindergartens.id','kindergartens.group_count')
@@ -468,8 +495,6 @@ class ManagerController extends Controller
                         ->where('kindergarten_users.user_id',\Auth::user()->id)
                         ->first();
 
-        // $groups = DB::table('groups')->select('*')
-                        // ->where('groups.kindergarten_id',$kindergarten->id)->get();
         $groups = Group::where('kindergarten_id',$kindergarten->id)->get();
         // dd($groups);
         $getGroup = Group::where('id',$request->input('group_id'))->first();
@@ -501,6 +526,10 @@ class ManagerController extends Controller
         return view('manager.childrens',compact('groups'));
     }
 
+/*
+* Edit child
+*
+*/
     public function editChild($id){
 
         $children = Children::find($id);
@@ -510,6 +539,10 @@ class ManagerController extends Controller
         return view('manager.edit_child',compact('children','parents'));
     }
 
+/*
+* Update child
+*
+*/
     public function updateChild(Request $request, $id){
 
         // get the children and his parents

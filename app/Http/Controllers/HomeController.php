@@ -29,7 +29,6 @@ class HomeController extends Controller
     public function index(Request $request)
     {
         
-        
         return view('welcome',compact(''));
     }
 
@@ -74,6 +73,18 @@ class HomeController extends Controller
         //Юзеры с ролью Менеджер
         $user_roles = RoleUser::where('role_id',3)->get();
 
-        return view('test',compact('kindergartens','users','kindergarten_users','user_roles'));
+        // return view('test',compact('kindergartens','users','kindergarten_users','user_roles'));
+    }
+
+
+    public function tets(){
+        
+        $client = new \GuzzleHttp\Client(['verify' => false]);
+        $api_call = $client->get('https://data.egov.kz/api/v2/s_pb/data');
+        $api_response = json_decode($api_call->getBody());
+
+        dd($api_response);
+
+        return view('test');
     }
 }

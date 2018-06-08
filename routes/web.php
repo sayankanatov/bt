@@ -11,6 +11,7 @@
 |
 */
 
+//Admin routes
 Route::group(['prefix' => 'admin', 'middleware' => ['role:admin'], 'namespace' => 'Admin'], function () {
     // Backpack\NewsCRUD
     CRUD::resource('kindergarten', 'KinderGartenCrudController');
@@ -18,6 +19,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['role:admin'], 'namespace' =
     CRUD::resource('cityuser', 'CityUserCrudController');
 });
 
+//Main route group with locale prefix
 Route::group(['prefix' => App\Http\Middleware\LocaleMiddleware::getLocale()], function(){
     Auth::routes();
 
@@ -45,13 +47,14 @@ Route::group(['prefix' => App\Http\Middleware\LocaleMiddleware::getLocale()], fu
         Route::get('/groups/{id}', 'ManagerController@editGroup');
         Route::post('/groups/{id}', 'ManagerController@updateGroup');
 
-
         Route::get('/childrens', ['as' => 'childrens','uses' => 'ManagerController@childrens']);
         Route::post('/childrens', ['as' => 'childrens','uses' => 'ManagerController@childrens']);
         Route::get('/childrens/{id}', 'ManagerController@editChild');
         Route::post('/childrens/{id}','ManagerController@updateChild');
     });
 });
+
+Route::get('/test', 'HomeController@tets')->name('tets');
 
 
 //Переключение языков
