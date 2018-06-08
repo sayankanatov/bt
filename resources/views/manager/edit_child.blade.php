@@ -37,7 +37,7 @@
 	                @lang('messages.parent_fio')
 	            </label>
 	            <div class="col-10">
-	            	<input type="text" class="form-control" name="parent_name{{++$key}}" value="{{$parent->name}}" required="required" />
+	            	<input type="text" class="form-control" name="parent_name{{$parent->id}}" value="{{$parent->name}}" required="required" />
 	            </div>
 	            
 			</div>
@@ -45,9 +45,12 @@
 				<label class="col-2 col-form-label">
 	                @lang('messages.telephone')
 	            </label>
-	            <div class="col-10">
-	            	<input type="text" class="form-control" name="parent_telephone{{++$key}}" value="{{$parent->telephone}}" required="required" data-mask="+7(000)000 00 00" data-mask-selectonfocus="true" placeholder="+7(___)__ __ __"/>
-	            </div>
+	            <div class="input-group col-10">
+				  <div class="input-group-prepend">
+				    <span class="input-group-text">+7</span>
+				  </div>
+				  <input type="text" class="form-control" name="parent_telephone{{$parent->id}}" value="{{$parent->telephone}}" required="required" data-mask="(000)000 00 00" data-mask-selectonfocus="true" placeholder="(___)__ __ __"/>
+				</div>
 			</div>
 		@endforeach
 		@endisset

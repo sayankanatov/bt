@@ -567,8 +567,8 @@ class ManagerController extends Controller
         $parents = Client::where('id',$children->client_id)->get();
         foreach ($parents as $key => $parent) {
             # code...
-            $parent->name = mb_convert_case($request->input('parent_name'.++$key),MB_CASE_TITLE,"UTF-8" );
-            $parent->telephone = $request->input('parent_telephone'.++$key);
+            $parent->name = mb_convert_case($request->input('parent_name'.$parent->id),MB_CASE_TITLE,"UTF-8" );
+            $parent->telephone = $request->input('parent_telephone'.$parent->id);
             $parent->save();
         }
 

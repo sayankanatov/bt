@@ -63,7 +63,7 @@
 							    			<td>{{$children->name}}</td>
 							    			<td>{{$children->iin}}</td>
 							    			<td>{{$children->parent->name}}</td>
-							    			<td>{{$children->parent->telephone}}</td>
+							    			<td>+7{{$children->parent->telephone}}</td>
 							    			<td>
 							    				<a class="btn btn-small btn-info" href="{{ action('ManagerController@editChild',$children->id) }}">@lang('messages.edit')</a>
 							    			</td>
@@ -112,10 +112,13 @@
                     	@lang('messages.parent_fio')
                   		</label>
                   	<input type="text" class="form-control" name="parent_name" required="required" />
-                  	<label>
-                    	@lang('messages.telephone')
-                  		</label>
-                  	<input type="tel" class="form-control" name="parent_telephone" required="required" data-mask="+7(000)000 00 00" data-mask-selectonfocus="true" placeholder="+7(___)__ __ __"/>
+                  	<label>@lang('messages.telephone')</label>
+					<div class="input-group mb-3">
+					  <div class="input-group-prepend">
+					    <span class="input-group-text">+7</span>
+					  </div>
+					  <input type="tel" class="form-control" name="parent_telephone" required="required" data-mask="(000)000 00 00" data-mask-selectonfocus="true" placeholder="(___)__ __ __"/>
+					</div>
                   	<input type="hidden" name="group_id" value="{{$group->id}}">
              
                 	</div>

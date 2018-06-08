@@ -116,9 +116,14 @@
 			<label class="col-2 col-form-label">
 				Тел/Факс
 			</label>
-			<div class="col-10">
-				<input type="tel" class="form-control phone_with_ddd" value="{{isset($kindergarten->telephone) ? $kindergarten->telephone : $kindergarten->tel_code}}" name="telephone" data-mask="+7(0000)00 00 00" data-mask-selectonfocus="true" placeholder="+7(____)__ __ __" />
+
+			<div class="input-group col-10">
+			  <div class="input-group-prepend">
+			    <span class="input-group-text">+7</span>
+			  </div>
+			  <input type="tel" class="form-control phone_with_ddd" data-mask="(0000)00 00 00" data-mask-selectonfocus="true" placeholder="(____)__ __ __" aria-label="(____)__ __ __" value="{{isset($kindergarten->telephone) ? $kindergarten->telephone : $kindergarten->tel_code}}" name="telephone">
 			</div>
+
 		</div>
 		<div class="form-group row">
 			<label for="exampleInputEmail" class="col-2 col-form-label">

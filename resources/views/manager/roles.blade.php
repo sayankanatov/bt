@@ -25,10 +25,17 @@
       <input type="text" class="form-control" name="role_name1" value="{{isset($deputy) ? $deputy->role_name : ''}}" placeholder="Заведующий">
     </div>
     <div class="form-group col-md-4">
+
       <label>@lang('messages.id_and_tel')</label>
-      <input type="tel" class="form-control form-control-sm" name="tel1" value="{{isset($deputy) ? $deputy->telephone : '+7'}}" required="required" data-mask="+7(000)000 00 00" data-mask-selectonfocus="true" placeholder="+7(___)__ __ __">
+      <div class="input-group md-4">
+        <div class="input-group-prepend">
+          <span class="input-group-text">+7</span>
+        </div>
+        <input type="tel" class="form-control form-control-sm" aria-describedby="basic-addon3" required="required" data-mask="(000)000 00 00" data-mask-selectonfocus="true" placeholder="(___)__ __ __" name="tel1" value="{{isset($deputy) ? $deputy->telephone : ''}}">
+      </div>
       <label>ФИО</label>
-      <input type="text" class="form-control form-control-sm" name="fio1" value="{{isset($deputy) ? $deputy->name : ''}}" required="required">
+        <input type="text" class="form-control form-control-sm" name="fio1" value="{{isset($deputy) ? $deputy->name : ''}}" required="required">
+
     </div>
   </div>
   
@@ -43,10 +50,18 @@
       <input type="text" class="form-control" name="role_name2" placeholder="Методист" value="{{isset($methodist) ? $methodist->role_name : ''}}">
     </div>
     <div class="form-group col-md-4">
+
       <label>@lang('messages.id_and_tel')</label>
-      <input type="tel" class="form-control form-control-sm" name="tel2" value="{{isset($methodist) ? $methodist->telephone : '+7'}}" required="required" data-mask="+7(000)000 00 00" data-mask-selectonfocus="true" placeholder="+7(___)__ __ __">
+      <div class="input-group md-4">
+        <div class="input-group-prepend">
+          <span class="input-group-text">+7</span>
+        </div>
+        <input type="tel" class="form-control form-control-sm" name="tel2" value="{{isset($methodist) ? $methodist->telephone : ''}}" required="required" data-mask="(000)000 00 00" data-mask-selectonfocus="true" placeholder="(___)__ __ __">
+      </div>
+      
       <label>ФИО</label>
       <input type="text" class="form-control form-control-sm" name="fio2" value="{{isset($methodist) ? $methodist->name : ''}}" required="required">
+
     </div>
   </div>
   <!-- THIRD ROW -->
@@ -61,7 +76,13 @@
     </div>
     <div class="form-group col-md-4">
       <label>@lang('messages.id_and_tel')</label>
-      <input type="tel" class="form-control form-control-sm" name="tel3" value="{{isset($nurse) ? $nurse->telephone : '+7'}}" required="required" data-mask="+7(000)000 00 00" data-mask-selectonfocus="true" placeholder="+7(___)__ __ __">
+      <div class="input-group md-4">
+        <div class="input-group-prepend">
+          <span class="input-group-text">+7</span>
+        </div>
+        <input type="tel" class="form-control form-control-sm" name="tel3" value="{{isset($nurse) ? $nurse->telephone : ''}}" required="required" data-mask="(000)000 00 00" data-mask-selectonfocus="true" placeholder="(___)__ __ __">
+      </div>
+      
       <label>ФИО</label>
       <input type="text" class="form-control form-control-sm" name="fio3" value="{{isset($nurse) ? $nurse->name : ''}}" required="true">
     </div>
@@ -78,7 +99,12 @@
     </div>
     <div class="form-group col-md-4">
       <label>@lang('messages.id_and_tel')</label>
-      <input type="tel" class="form-control form-control-sm" name="tel4" value="{{isset($accountant) ? $accountant->telephone : '+7'}}" required="required" data-mask="+7(000)000 00 00" data-mask-selectonfocus="true" placeholder="+7(___)__ __ __">
+      <div class="input-group md-4">
+        <div class="input-group-prepend">
+          <span class="input-group-text">+7</span>
+        </div>
+        <input type="tel" class="form-control form-control-sm" name="tel4" value="{{isset($accountant) ? $accountant->telephone : ''}}" required="required" data-mask="(000)000 00 00" data-mask-selectonfocus="true" placeholder="(___)__ __ __">
+      </div>
       <label>ФИО</label>
       <input type="text" class="form-control form-control-sm" name="fio4" value="{{isset($accountant) ? $accountant->name : ''}}" required="required">
     </div>
@@ -95,7 +121,12 @@
     </div>
     <div class="form-group col-md-4">
       <label>@lang('messages.id_and_tel')</label>
-      <input type="tel" class="form-control form-control-sm" name="tel5" value="{{isset($storekeeper) ? $storekeeper->telephone : '+7'}}" required="required" data-mask="+7(000)000 00 00" data-mask-selectonfocus="true" placeholder="+7(___)__ __ __">
+      <div class="input-group md-4">
+        <div class="input-group-prepend">
+          <span class="input-group-text">+7</span>
+        </div>
+        <input type="tel" class="form-control form-control-sm" name="tel5" value="{{isset($storekeeper) ? $storekeeper->telephone : ''}}" required="required" data-mask="(000)000 00 00" data-mask-selectonfocus="true" placeholder="(___)__ __ __">
+      </div>
       <label>ФИО</label>
       <input type="text" class="form-control form-control-sm" name="fio5" value="{{isset($storekeeper) ? $storekeeper->name : ''}}" required="required">
     </div>
@@ -113,7 +144,12 @@
     </div>
     <div class="form-group col-md-4">
       <label>@lang('messages.id_and_tel')</label>
-      <input type="tel" class="form-control form-control-sm" name="tel6" required="required" data-mask="+7(000)000 00 00" data-mask-selectonfocus="true" placeholder="+7(___)__ __ __" value="+7">
+      <div class="input-group md-4">
+        <div class="input-group-prepend">
+          <span class="input-group-text">+7</span>
+        </div>
+        <input type="tel" class="form-control form-control-sm" name="tel6" required="required" data-mask="(000)000 00 00" data-mask-selectonfocus="true" placeholder="(___)__ __ __" value="+7">
+      </div>
       <label>ФИО</label>
       <input type="text" class="form-control form-control-sm" name="fio6" required="required">
     </div>
@@ -133,7 +169,12 @@
     </div>
     <div class="form-group col-md-4">
       <label for="inputTel">@lang('messages.id_and_tel')</label>
-      <input type="tel" class="form-control form-control-sm" id="inputTel" name="mentortel_{{$mentor->id}}" value="{{isset($mentor) ? $mentor->telephone : '+7'}}" required="true" data-mask="+7(000)000 00 00" data-mask-selectonfocus="true" placeholder="+7(___)__ __ __">
+      <div class="input-group md-4">
+        <div class="input-group-prepend">
+          <span class="input-group-text">+7</span>
+        </div>
+        <input type="tel" class="form-control form-control-sm" id="inputTel" name="mentortel_{{$mentor->id}}" value="{{isset($mentor) ? $mentor->telephone : ''}}" required="true" data-mask="(000)000 00 00" data-mask-selectonfocus="true" placeholder="(___)__ __ __">
+      </div>
       <label for="inputFIO">ФИО</label>
       <input type="text" class="form-control form-control-sm" id="inputFIO" name="mentorfio_{{$mentor->id}}" value="{{isset($mentor) ? $mentor->name : ''}}" required="required">
     </div>
@@ -160,10 +201,13 @@
               <form role="form" method="post">
                 @csrf
                 <div class="form-group">
-                  <label for="exampleInputTel">
-                    @lang('messages.telephone')
-                  </label>
-                  <input type="tel" class="form-control" id="exampleInputTel" name="mentor_tel"required="required" data-mask="+7(000)000 00 00" data-mask-selectonfocus="true" placeholder="+7(___)__ __ __" value="+7" />
+                  <label>@lang('messages.telephone')</label>
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">+7</span>
+                    </div>
+                    <input type="tel" class="form-control" name="mentor_tel"required="required" data-mask="(000)000 00 00" data-mask-selectonfocus="true" placeholder="(___)__ __ __">
+                  </div>
                   <label for="exampleInputFIO">
                     @lang('messages.fio')
                   </label>
