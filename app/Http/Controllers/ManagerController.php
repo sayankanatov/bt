@@ -407,6 +407,16 @@ class ManagerController extends Controller
                     ->get();
         // dd($groups);
 
+        //get flash message in view
+        if($kindergarten->group_count - $groups->count() > 0){
+
+            \Session::flash('warning', trans('messages.you_must_add').' '.$kindergarten->group_count - $groups->count().' '.trans('messages.group'));
+
+        }elseif($groups->count() - $kindergarten->group_count > 0){
+            
+            \Session::flash('warning', trans('messages.you_must_edit_general_info').' '.$groups->count() - $kindergarten->group_count.' '.trans('messages.group'));
+        }
+
         $group_categories = GroupCategory::all();
 
         $mentors = DB::table('clients')

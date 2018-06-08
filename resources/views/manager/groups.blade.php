@@ -11,14 +11,10 @@
       </div><br />
   @endif
 
-  @if($kindergarten->group_count - $groups->count() > 0)
-  <div class="alert alert-warning">
-    <p>@lang('messages.you_must_add') {{$kindergarten->group_count - $groups->count()}} @lang('messages.group')</p>
-  </div>
-  @elseif($groups->count() - $kindergarten->group_count > 0)
-  <div class="alert alert-warning">
-    <p>@lang('messages.you_must_edit_general_info') {{$groups->count() - $kindergarten->group_count}} @lang('messages.group')</p>
-  </div>
+  @if (\Session::has('warning'))
+      <div class="alert alert-warning">
+        <p>{{ \Session::get('warning') }}</p>
+      </div><br />
   @endif
   
   <div class="page-header">
