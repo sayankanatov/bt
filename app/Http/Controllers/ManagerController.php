@@ -408,13 +408,16 @@ class ManagerController extends Controller
         // dd($groups);
 
         //get flash message in view
-        if($kindergarten->group_count - $groups->count() > 0){
+        $result = $kindergarten->group_count - $groups->count();
+        $converse_result = $groups->count() - $kindergarten->group_count;
 
-            \Session::flash('warning', trans('messages.you_must_add').' '.$kindergarten->group_count - $groups->count().' '.trans('messages.group'));
+        if($result > 0){
 
-        }elseif($groups->count() - $kindergarten->group_count > 0){
-            
-            \Session::flash('warning', trans('messages.you_must_edit_general_info').' '.$groups->count() - $kindergarten->group_count.' '.trans('messages.group'));
+            \Session::flash('warning', trans('messages.you_must_add').' '.$result.' '.trans('messages.group'));
+
+        }elseif($converse_result > 0){
+
+            \Session::flash('warning', trans('messages.you_must_edit_general_info').' '.$converse_result.' '.trans('messages.group'));
         }
 
         $group_categories = GroupCategory::all();
