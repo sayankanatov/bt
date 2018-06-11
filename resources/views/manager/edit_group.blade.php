@@ -25,7 +25,7 @@
 			<label>
 				@lang('messages.title')
 			</label>
-			<input type="text" class="form-control" name="group_name" value="{{$group->title}}" required="required"/>
+			<input type="text" class="form-control" name="group_name" value="{{$group->title}}" required="required" />
 		</div>
 		<div class="form-group">				 
 			<label>

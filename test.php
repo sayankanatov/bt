@@ -124,3 +124,5 @@ document.addEventListener("click", function (e) {
 <script>
 autocomplete(document.getElementById("myInput"), countries);
 </script>
+
+ALTER TABLE `childrens` CHANGE `name` `name` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;

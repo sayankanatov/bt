@@ -266,7 +266,7 @@ class ManagerController extends Controller
             $client = new Client();
             $client->telephone = $request->input('tel1');
             $client->name = mb_convert_case($request->input('fio1'),MB_CASE_TITLE,"UTF-8");
-            $client->role_name = $request->input('role_name1');
+            $client->role_name = mb_convert_case($request->input('role_name1'),MB_CASE_TITLE,"UTF-8");
             $client->save();
             //Устанавливаем связь с садиком
             $client->kindergarten()->attach($kindergarten->id);
@@ -277,7 +277,7 @@ class ManagerController extends Controller
             $client = Client::where('id',$deputy->client_id)->first();
             $client->telephone = $request->input('tel1');
             $client->name = mb_convert_case($request->input('fio1'),MB_CASE_TITLE,"UTF-8");
-            $client->role_name = $request->input('role_name1');
+            $client->role_name = mb_convert_case($request->input('role_name1'),MB_CASE_TITLE,"UTF-8");
             $client->save();
         }
 
@@ -285,7 +285,7 @@ class ManagerController extends Controller
             $client = new Client();
             $client->telephone = $request->input('tel2');
             $client->name = mb_convert_case($request->input('fio2'),MB_CASE_TITLE,"UTF-8");
-            $client->role_name = $request->input('role_name2');
+            $client->role_name = mb_convert_case($request->input('role_name2'),MB_CASE_TITLE,"UTF-8");
             $client->save();
             //Устанавливаем связь с садиком
             $client->kindergarten()->attach($kindergarten->id);
@@ -296,7 +296,7 @@ class ManagerController extends Controller
             $client = Client::where('id',$methodist->client_id)->first();
             $client->telephone = $request->input('tel2');
             $client->name = mb_convert_case($request->input('fio2'),MB_CASE_TITLE,"UTF-8");
-            $client->role_name = $request->input('role_name2');
+            $client->role_name = mb_convert_case($request->input('role_name2'),MB_CASE_TITLE,"UTF-8");
             $client->save();
         }
 
@@ -304,7 +304,7 @@ class ManagerController extends Controller
             $client = new Client();
             $client->telephone = $request->input('tel3');
             $client->name = mb_convert_case($request->input('fio3'),MB_CASE_TITLE,"UTF-8");
-            $client->role_name = $request->input('role_name3');
+            $client->role_name = mb_convert_case($request->input('role_name3'),MB_CASE_TITLE,"UTF-8");
             $client->save();
             //Устанавливаем связь с садиком
             $client->kindergarten()->attach($kindergarten->id);
@@ -315,7 +315,7 @@ class ManagerController extends Controller
             $client = Client::where('id',$nurse->client_id)->first();
             $client->telephone = $request->input('tel3');
             $client->name = mb_convert_case($request->input('fio3'),MB_CASE_TITLE,"UTF-8");
-            $client->role_name = $request->input('role_name3');
+            $client->role_name = mb_convert_case($request->input('role_name3'),MB_CASE_TITLE,"UTF-8");
             $client->save();
         }
 
@@ -323,7 +323,7 @@ class ManagerController extends Controller
             $client = new Client();
             $client->telephone = $request->input('tel4');
             $client->name = mb_convert_case($request->input('fio4'),MB_CASE_TITLE,"UTF-8");
-            $client->role_name = $request->input('role_name4');
+            $client->role_name = mb_convert_case($request->input('role_name4'),MB_CASE_TITLE,"UTF-8");
             $client->save();
             //Устанавливаем связь с садиком
             $client->kindergarten()->attach($kindergarten->id);
@@ -334,7 +334,7 @@ class ManagerController extends Controller
             $client = Client::where('id',$accountant->client_id)->first();
             $client->telephone = $request->input('tel4');
             $client->name = mb_convert_case($request->input('fio4'),MB_CASE_TITLE,"UTF-8");
-            $client->role_name = $request->input('role_name4');
+            $client->role_name = mb_convert_case($request->input('role_name4'),MB_CASE_TITLE,"UTF-8");
             $client->save();
         }
 
@@ -342,7 +342,7 @@ class ManagerController extends Controller
             $client = new Client();
             $client->telephone = $request->input('tel5');
             $client->name = mb_convert_case($request->input('fio5'),MB_CASE_TITLE,"UTF-8");
-            $client->role_name = $request->input('role_name5');
+            $client->role_name = mb_convert_case($request->input('role_name5'),MB_CASE_TITLE,"UTF-8");
             $client->save();
             //Устанавливаем связь с садиком
             $client->kindergarten()->attach($kindergarten->id);
@@ -353,7 +353,7 @@ class ManagerController extends Controller
             $client = Client::where('id',$storekeeper->client_id)->first();
             $client->telephone = $request->input('tel5');
             $client->name = mb_convert_case($request->input('fio5'),MB_CASE_TITLE,"UTF-8");
-            $client->role_name = $request->input('role_name5');
+            $client->role_name = mb_convert_case($request->input('role_name5'),MB_CASE_TITLE,"UTF-8");
             $client->save();
         }
 
@@ -361,7 +361,7 @@ class ManagerController extends Controller
             $client = new Client();
             $client->telephone = $request->input('tel6');
             $client->name = mb_convert_case($request->input('fio6'),MB_CASE_TITLE,"UTF-8");
-            $client->role_name = $request->input('role_name6');
+            $client->role_name = mb_convert_case($request->input('role_name6'),MB_CASE_TITLE,"UTF-8");
             $client->save();
             //Устанавливаем связь с садиком
             $client->kindergarten()->attach($kindergarten->id);
@@ -486,7 +486,7 @@ class ManagerController extends Controller
             $group->save();
 
         }catch(QueryException $e){
-            \Session::flash('oops', 'Sorry something went worng. Please try again!');
+            \Session::flash('oops', 'Sorry something went wrong. Please fill fields!');
             return \Redirect('manager/groups/'.$group->id);
         }
         // $request->validate([
@@ -559,18 +559,36 @@ class ManagerController extends Controller
     public function updateChild(Request $request, $id){
 
         // get the children and his parents
-        $children = Children::find($id);
-        $children->name = mb_convert_case($request->input('child_name'),MB_CASE_TITLE,"UTF-8" );
-        $children->iin = $request->input('child_iin');
-        $children->save();
+        try{
+            $children = Children::find($id);
+            $children->name = mb_convert_case($request->input('child_name'),MB_CASE_TITLE,"UTF-8" );
+            $children->iin = $request->input('child_iin');
+            if($children->name !== ''){
+                $children->save();
+            }else {
+                \Session::flash('oops', 'Sorry something went wrong. Please fill fields!');
+                return \Redirect('manager/childrens/'.$children->id);
+            }
+            
 
-        $parents = Client::where('id',$children->client_id)->get();
-        foreach ($parents as $key => $parent) {
-            # code...
-            $parent->name = mb_convert_case($request->input('parent_name'.$parent->id),MB_CASE_TITLE,"UTF-8" );
-            $parent->telephone = $request->input('parent_telephone'.$parent->id);
-            $parent->save();
+            $parents = Client::where('id',$children->client_id)->get();
+            foreach ($parents as $key => $parent) {
+                # code...
+                $parent->name = mb_convert_case($request->input('parent_name'.$parent->id),MB_CASE_TITLE,"UTF-8" );
+                $parent->telephone = $request->input('parent_telephone'.$parent->id);
+                if($parent->name !== ''){
+                    $parent->save();   
+                }else {
+                    \Session::flash('oops', 'Sorry something went wrong. Please fill fields!');
+                    return \Redirect('manager/childrens/'.$children->id);
+                }
+            }
+
+        }catch(QueryException $e){
+            \Session::flash('oops', 'Sorry something went wrong. Please fill fields!');
+            return \Redirect('manager/childrens/'.$children->id);
         }
+        
 
         \Session::flash('message', 'Successfully updated!');
 

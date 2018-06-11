@@ -5,6 +5,11 @@
       @include('includes.head-manager')  
 </div>
 <div class="col-md-12">
+	@if (\Session::has('oops'))
+      <div class="alert alert-danger">
+        <p>{{ \Session::get('oops') }}</p>
+      </div><br />
+  	@endif
 	<div class="page-header">
 		<h3>
 			@lang('messages.edit')
@@ -19,13 +24,13 @@
 			<label>
 				@lang('messages.child_fio')
 			</label>
-			<input type="text" class="form-control" name="child_name" value="{{$children->name}}" required="required"/>
+			<input type="text" class="form-control" name="child_name" value="{{$children->name}}"/>
 		</div>
 		<div class="form-group">
 			<label>
                 @lang('messages.child_iin')
             </label>
-            <input type="tel" class="form-control" name="child_iin" value="{{$children->iin}}" data-mask="000000000000" data-mask-selectonfocus="true"required="required" />
+            <input type="tel" class="form-control" name="child_iin" value="{{$children->iin}}" data-mask="000000000000" data-mask-selectonfocus="true" required="required" />
 		</div>
 		<h4>
 			Родители
@@ -37,7 +42,7 @@
 	                @lang('messages.parent_fio')
 	            </label>
 	            <div class="col-10">
-	            	<input type="text" class="form-control" name="parent_name{{$parent->id}}" value="{{$parent->name}}" required="required" />
+	            	<input type="text" class="form-control" name="parent_name{{$parent->id}}" value="{{$parent->name}}" />
 	            </div>
 	            
 			</div>
