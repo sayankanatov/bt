@@ -24,7 +24,7 @@
 			<label>
 				@lang('messages.child_fio')
 			</label>
-			<input type="text" class="form-control" name="child_name" value="{{$children->name}}"/>
+			<input type="text" class="form-control" name="child_name" value="{{$children->name}}" required="required"/>
 		</div>
 		<div class="form-group">
 			<label>

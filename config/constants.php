@@ -16,4 +16,7 @@ return [
 	'paginate' => [
 		'kindergarten' => 10,
 	],
+	'length' => [
+		'telephone' => 14
+	],
 ];

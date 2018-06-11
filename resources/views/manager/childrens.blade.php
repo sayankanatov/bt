@@ -11,6 +11,12 @@
       </div><br />
   	@endif
 
+  	@if (\Session::has('oops'))
+      <div class="alert alert-danger">
+        <p>{{ \Session::get('oops') }}</p>
+      </div><br />
+  	@endif
+
   	<div class="table-responsive">
     <table id="mytable" class="table table-bordred table-striped">
       <thead>

@@ -81,7 +81,7 @@
               </button>
             </div>
             <div class="modal-body">
-              <form role="form" method="post">
+              <form role="form" method="post" id="my-form">
                 @csrf
                 <div class="form-group">
                   <label>
@@ -123,7 +123,7 @@
                     @endisset
                   </select>
                 </div>
-                <button type="submit" name="add-group-submit" class="btn btn-primary">
+                <button type="submit" name="add-group-submit" id="add-group-submit" class="btn btn-primary">
                   @lang('messages.add_group')
                 </button>
               </form>
@@ -135,5 +135,12 @@
       </div>
 </div>
 @endif
-
+<script type="text/javascript">
+  $(document).ready(function () {
+    $("#my-form").submit(function () {
+        $("#add-group-submit").attr("disabled", true);
+        return true;
+    });
+});
+</script>
 @stop

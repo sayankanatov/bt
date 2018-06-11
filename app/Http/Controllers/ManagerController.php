@@ -117,7 +117,14 @@ class ManagerController extends Controller
         $kinder_info->city = $request->get('city');
         $kinder_info->address = $request->input('address');
         $kinder_info->lang = $request->get('lang');
-        $kinder_info->telephone = $request->input('telephone');
+
+        if(strlen($request->input('telephone')) == Config::get('constants.length.telephone')){
+            $kinder_info->telephone = $request->input('telephone');
+        }else {
+            \Session::flash('oops', 'Sorry something went wrong. Please fill number correctly!');
+            return \Redirect('manager/general');
+        }
+        
         $kinder_info->email = $request->input('email');
         $kinder_info->worktime_start = $request->get('worktime_start');
         $kinder_info->worktime_end = $request->get('worktime_end');
@@ -264,7 +271,14 @@ class ManagerController extends Controller
         // По аналогии создаем или редактируем остальных участников
         if($request->input('tel1') && !$deputy){
             $client = new Client();
-            $client->telephone = $request->input('tel1');
+            
+            if(strlen($request->input('tel1')) == Config::get('constants.length.telephone')){
+                $client->telephone = $request->input('tel1');
+            }else {
+               \Session::flash('oops', 'Sorry something went wrong. Please fill number correctly!');
+                return \Redirect('manager/roles');
+            }
+
             $client->name = mb_convert_case($request->input('fio1'),MB_CASE_TITLE,"UTF-8");
             $client->role_name = mb_convert_case($request->input('role_name1'),MB_CASE_TITLE,"UTF-8");
             $client->save();
@@ -275,7 +289,14 @@ class ManagerController extends Controller
 
         }elseif(isset($deputy) && $request->input('tel1')) {
             $client = Client::where('id',$deputy->client_id)->first();
-            $client->telephone = $request->input('tel1');
+
+            if(strlen($request->input('tel1')) == Config::get('constants.length.telephone')){
+                $client->telephone = $request->input('tel1');
+            }else {
+               \Session::flash('oops', 'Sorry something went wrong. Please fill number correctly!');
+                return \Redirect('manager/roles');
+            }
+
             $client->name = mb_convert_case($request->input('fio1'),MB_CASE_TITLE,"UTF-8");
             $client->role_name = mb_convert_case($request->input('role_name1'),MB_CASE_TITLE,"UTF-8");
             $client->save();
@@ -283,7 +304,14 @@ class ManagerController extends Controller
 
         if($request->input('tel2') && !$methodist){
             $client = new Client();
-            $client->telephone = $request->input('tel2');
+            
+            if(strlen($request->input('tel2')) == Config::get('constants.length.telephone')){
+                $client->telephone = $request->input('tel2');
+            }else {
+               \Session::flash('oops', 'Sorry something went wrong. Please fill number correctly!');
+                return \Redirect('manager/roles');
+            }
+
             $client->name = mb_convert_case($request->input('fio2'),MB_CASE_TITLE,"UTF-8");
             $client->role_name = mb_convert_case($request->input('role_name2'),MB_CASE_TITLE,"UTF-8");
             $client->save();
@@ -294,7 +322,14 @@ class ManagerController extends Controller
 
         }elseif(isset($methodist) && $request->input('tel2')){
             $client = Client::where('id',$methodist->client_id)->first();
-            $client->telephone = $request->input('tel2');
+
+            if(strlen($request->input('tel2')) == Config::get('constants.length.telephone')){
+                $client->telephone = $request->input('tel2');
+            }else {
+               \Session::flash('oops', 'Sorry something went wrong. Please fill number correctly!');
+                return \Redirect('manager/roles');
+            }
+
             $client->name = mb_convert_case($request->input('fio2'),MB_CASE_TITLE,"UTF-8");
             $client->role_name = mb_convert_case($request->input('role_name2'),MB_CASE_TITLE,"UTF-8");
             $client->save();
@@ -302,7 +337,14 @@ class ManagerController extends Controller
 
         if($request->input('tel3') && !$nurse){
             $client = new Client();
-            $client->telephone = $request->input('tel3');
+            
+            if(strlen($request->input('tel3')) == Config::get('constants.length.telephone')){
+                $client->telephone = $request->input('tel3');
+            }else {
+               \Session::flash('oops', 'Sorry something went wrong. Please fill number correctly!');
+                return \Redirect('manager/roles');
+            }
+
             $client->name = mb_convert_case($request->input('fio3'),MB_CASE_TITLE,"UTF-8");
             $client->role_name = mb_convert_case($request->input('role_name3'),MB_CASE_TITLE,"UTF-8");
             $client->save();
@@ -313,7 +355,14 @@ class ManagerController extends Controller
 
         }elseif(isset($nurse) && $request->input('tel3')){
             $client = Client::where('id',$nurse->client_id)->first();
-            $client->telephone = $request->input('tel3');
+
+            if(strlen($request->input('tel3')) == Config::get('constants.length.telephone')){
+                $client->telephone = $request->input('tel3');
+            }else {
+               \Session::flash('oops', 'Sorry something went wrong. Please fill number correctly!');
+                return \Redirect('manager/roles');
+            }
+            
             $client->name = mb_convert_case($request->input('fio3'),MB_CASE_TITLE,"UTF-8");
             $client->role_name = mb_convert_case($request->input('role_name3'),MB_CASE_TITLE,"UTF-8");
             $client->save();
@@ -321,7 +370,14 @@ class ManagerController extends Controller
 
         if($request->input('tel4') && !$accountant){
             $client = new Client();
-            $client->telephone = $request->input('tel4');
+
+            if(strlen($request->input('tel4')) == Config::get('constants.length.telephone')){
+                $client->telephone = $request->input('tel4');
+            }else {
+               \Session::flash('oops', 'Sorry something went wrong. Please fill number correctly!');
+                return \Redirect('manager/roles');
+            }
+
             $client->name = mb_convert_case($request->input('fio4'),MB_CASE_TITLE,"UTF-8");
             $client->role_name = mb_convert_case($request->input('role_name4'),MB_CASE_TITLE,"UTF-8");
             $client->save();
@@ -332,6 +388,14 @@ class ManagerController extends Controller
 
         }elseif(isset($accountant) && $request->input('tel4')){
             $client = Client::where('id',$accountant->client_id)->first();
+
+            if(strlen($request->input('tel4')) == Config::get('constants.length.telephone')){
+                $client->telephone = $request->input('tel4');
+            }else {
+               \Session::flash('oops', 'Sorry something went wrong. Please fill number correctly!');
+                return \Redirect('manager/roles');
+            }
+
             $client->telephone = $request->input('tel4');
             $client->name = mb_convert_case($request->input('fio4'),MB_CASE_TITLE,"UTF-8");
             $client->role_name = mb_convert_case($request->input('role_name4'),MB_CASE_TITLE,"UTF-8");
@@ -340,7 +404,14 @@ class ManagerController extends Controller
 
         if($request->input('tel5') && !$storekeeper){
             $client = new Client();
-            $client->telephone = $request->input('tel5');
+
+            if(strlen($request->input('tel5')) == Config::get('constants.length.telephone')){
+                $client->telephone = $request->input('tel5');
+            }else {
+               \Session::flash('oops', 'Sorry something went wrong. Please fill number correctly!');
+                return \Redirect('manager/roles');
+            }
+
             $client->name = mb_convert_case($request->input('fio5'),MB_CASE_TITLE,"UTF-8");
             $client->role_name = mb_convert_case($request->input('role_name5'),MB_CASE_TITLE,"UTF-8");
             $client->save();
@@ -351,15 +422,30 @@ class ManagerController extends Controller
 
         }elseif(isset($storekeeper) && $request->input('tel5')) {
             $client = Client::where('id',$storekeeper->client_id)->first();
+
+            if(strlen($request->input('tel5')) == Config::get('constants.length.telephone')){
+                $client->telephone = $request->input('tel5');
+            }else {
+               \Session::flash('oops', 'Sorry something went wrong. Please fill number correctly!');
+                return \Redirect('manager/roles');
+            }
+
             $client->telephone = $request->input('tel5');
             $client->name = mb_convert_case($request->input('fio5'),MB_CASE_TITLE,"UTF-8");
             $client->role_name = mb_convert_case($request->input('role_name5'),MB_CASE_TITLE,"UTF-8");
             $client->save();
         }
-
+        // Создаем первого воспитателя
         if($request->input('tel6')){
             $client = new Client();
-            $client->telephone = $request->input('tel6');
+
+            if(strlen($request->input('tel6')) == Config::get('constants.length.telephone')){
+                $client->telephone = $request->input('tel6');
+            }else {
+               \Session::flash('oops', 'Sorry something went wrong. Please fill number correctly!');
+                return \Redirect('manager/roles');
+            }
+
             $client->name = mb_convert_case($request->input('fio6'),MB_CASE_TITLE,"UTF-8");
             $client->role_name = mb_convert_case($request->input('role_name6'),MB_CASE_TITLE,"UTF-8");
             $client->save();
@@ -368,11 +454,18 @@ class ManagerController extends Controller
             //Устанавливаем роль
             $client->role()->attach(Config::get('constants.roles.mentor'));
         }
-
+        // Создаем остальных воспитателей
         if($request->input('mentor_tel')){
             $mentor = new Client();
             $mentor->name = mb_convert_case($request->input('mentor_fio'),MB_CASE_TITLE,"UTF-8");
-            $mentor->telephone = $request->input('mentor_tel');
+
+            if(strlen($request->input('mentor_tel')) == Config::get('constants.length.telephone')){
+                $mentor->telephone = $request->input('mentor_tel');
+            }else {
+               \Session::flash('oops', 'Sorry something went wrong. Please fill number correctly!');
+                return \Redirect('manager/roles');
+            }
+
             $mentor->save();
             $mentor->kindergarten()->attach($kindergarten->id);
             $mentor->role()->attach(Config::get('constants.roles.mentor'));
@@ -382,7 +475,14 @@ class ManagerController extends Controller
             # code...
             if($request->input('mentortel_'.$mentor->id)){
                 $exist_mentor = Client::where('id',$mentor->id)->first();
-                $exist_mentor->telephone = $request->input('mentortel_'.$mentor->id);
+
+                if(strlen($request->input('mentortel_'.$mentor->id)) == Config::get('constants.length.telephone')){
+                    $exist_mentor->telephone = $request->input('mentortel_'.$mentor->id);
+                }else {
+                \Session::flash('oops', 'Sorry something went wrong. Please fill number correctly!');
+                return \Redirect('manager/roles');
+                }
+                
                 $exist_mentor->name = mb_convert_case($request->input('mentorfio_'.$mentor->id),MB_CASE_TITLE,"UTF-8");
                 $exist_mentor->save();
             }
@@ -489,9 +589,6 @@ class ManagerController extends Controller
             \Session::flash('oops', 'Sorry something went wrong. Please fill fields!');
             return \Redirect('manager/groups/'.$group->id);
         }
-        // $request->validate([
-        //     'title' => 'filled',
-        // ]);
 
         \Session::flash('message', 'Successfully updated!');
 
@@ -516,7 +613,15 @@ class ManagerController extends Controller
             
             $parent = new Client();
             $parent->name = mb_convert_case($request->input('parent_name'),MB_CASE_TITLE,"UTF-8");
-            $parent->telephone = $request->input('parent_telephone');
+
+            if(strlen($request->input('parent_telephone')) == Config::get('constants.length.telephone')){
+                $parent->telephone = $request->input('parent_telephone');
+            }else {
+                \Session::flash('oops', 'Sorry something went wrong. Please fill number correctly!');
+                return \Redirect('manager/childrens');
+            }
+
+            // $parent->telephone = $request->input('parent_telephone');
             $parent->role_name = 'Родитель';
             $parent->save();
             $parent->role()->attach(Config::get('constants.roles.parent'));
@@ -570,12 +675,19 @@ class ManagerController extends Controller
                 return \Redirect('manager/childrens/'.$children->id);
             }
             
-
             $parents = Client::where('id',$children->client_id)->get();
+
             foreach ($parents as $key => $parent) {
                 # code...
                 $parent->name = mb_convert_case($request->input('parent_name'.$parent->id),MB_CASE_TITLE,"UTF-8" );
-                $parent->telephone = $request->input('parent_telephone'.$parent->id);
+
+                if(strlen($request->input('parent_telephone'.$parent->id)) == Config::get('constants.length.telephone')){
+                    $parent->telephone = $request->input('parent_telephone'.$parent->id);
+                }else {
+                    \Session::flash('oops', 'Sorry something went wrong. Please fill number correctly!');
+                    return \Redirect('manager/childrens/'.$children->id);
+                }
+                
                 if($parent->name !== ''){
                     $parent->save();   
                 }else {
@@ -583,6 +695,9 @@ class ManagerController extends Controller
                     return \Redirect('manager/childrens/'.$children->id);
                 }
             }
+            // $request->validate([
+            //     'telephone' => 'numeric|min:10',
+            // ]);
 
         }catch(QueryException $e){
             \Session::flash('oops', 'Sorry something went wrong. Please fill fields!');
