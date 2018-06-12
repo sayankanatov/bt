@@ -44,5 +44,8 @@ return [
 	'child_fio' => 'Child FIO',
 	'show' => 'Show',
 	'parent_fio' => 'Parent FIO',
+	'child' => 'child(ren)',
+	'you_must_edit_group_info' => 'В разделе Группы у Вас меньше на',
+	'you_must_add_in_group' => 'Вам необходимо добавить в данную группу',
 
 ];

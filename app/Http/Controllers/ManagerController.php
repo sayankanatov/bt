@@ -606,6 +606,9 @@ class ManagerController extends Controller
                         ->first();
 
         $groups = Group::where('kindergarten_id',$kindergarten->id)->get();
+
+        //Вывод для каждой группы флэш сообщения о необходимом количестве детей
+        
         // dd($groups);
         $getGroup = Group::where('id',$request->input('group_id'))->first();
 

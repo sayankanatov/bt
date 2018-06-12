@@ -83,7 +83,7 @@ class HomeController extends Controller
         $api_call = $client->get('https://data.egov.kz/api/v2/s_pb/data');
         $api_response = json_decode($api_call->getBody());
 
-        dd($api_response);
+        // dd($api_response);
 
         return view('test');
     }

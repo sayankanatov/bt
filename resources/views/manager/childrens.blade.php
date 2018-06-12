@@ -64,7 +64,7 @@
 							    	</thead>
 							    	<tbody>
 							    		@foreach($group->children as $key => $children)
-							    		<tr class="table-warning">
+							    		<tr class="table-info">
 							    			<td>{{++$key}}</td>
 							    			<td>{{$children->name}}</td>
 							    			<td>{{$children->iin}}</td>
@@ -80,6 +80,16 @@
 							</div>
 						</div>
 						<div class="modal-footer">
+							@if($group->child_count - $group->children->count() > 0)
+							<div class="alert alert-warning mr-auto">
+							    <p>@lang('messages.you_must_add_in_group') {{$group->child_count - $group->children->count()}} @lang('messages.child')</p>
+							</div>
+							@elseif($group->children->count() - $group->child_count > 0)
+							<div class="alert alert-warning mr-auto">
+							    <p>@lang('messages.you_must_edit_group_info') {{$group->children->count() - $group->child_count}} @lang('messages.child')</p>
+							</div>
+							@endif
+								
 							<button type="button" class="btn btn-secondary" data-dismiss="modal">
 								@lang('messages.back')
 							</button>
@@ -133,7 +143,7 @@
                 	</button>
               	</form>
 					</div>
-						
+					
 				</div>
 					
 			</div>

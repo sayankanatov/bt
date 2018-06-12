@@ -25,7 +25,7 @@ Route::group(['prefix' => App\Http\Middleware\LocaleMiddleware::getLocale()], fu
 
     Route::get('/', 'HomeController@index')->name('home');
 
-	Route::group(['prefix'=>'account', 'as'=>'account.'], function(){
+	Route::group(['prefix'=>'account', 'as'=>'account.','middleware' => ['role:Координатор']], function(){
         Route::resource('kindergarten','AccountController');
         Route::post('kindergarten/{id}', [ 'as' => 'kindergartenUpdate','uses' => 'AccountController@update']);
     	Route::get('/', 'AccountController@index')->name('account');
@@ -33,7 +33,7 @@ Route::group(['prefix' => App\Http\Middleware\LocaleMiddleware::getLocale()], fu
     	Route::post('kindergarten', ['as' => 'kindergarten', 'uses' => 'AccountController@kinder']);
 	});
 
-    Route::group(['prefix'=>'manager', 'as'=>'manager.'], function(){
+    Route::group(['prefix'=>'manager', 'as'=>'manager.','middleware' => ['role:Менеджер']], function(){
         Route::get('/', 'ManagerController@index')->name('manager');
 
         Route::get('/general', 'ManagerController@general');
