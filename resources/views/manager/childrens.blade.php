@@ -142,6 +142,9 @@
       @endforeach <!-- Main foreach end-->
     </tbody>     
   </table>
+  	<a href="{{url('manager')}}" class="btn btn-secondary">
+		@lang('messages.back')
+	</a>
 
 </div>
 @stop

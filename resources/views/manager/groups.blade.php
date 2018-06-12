@@ -123,7 +123,7 @@
                     @endisset
                   </select>
                 </div>
-                <button type="submit" name="add-group-submit" id="add-group-submit" class="btn btn-primary">
+                <button type="submit" name="add-group-submit" class="btn btn-primary" id="add-group-submit" onclick="getElementById('add-group-submit').style.display = 'none';">
                   @lang('messages.add_group')
                 </button>
               </form>
@@ -135,12 +135,5 @@
       </div>
 </div>
 @endif
-<script type="text/javascript">
-  $(document).ready(function () {
-    $("#my-form").submit(function () {
-        $("#add-group-submit").attr("disabled", true);
-        return true;
-    });
-});
-</script>
+
 @stop

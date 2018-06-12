@@ -41,22 +41,40 @@ class LoginController extends Controller
     public function authenticated()
     {
         if(auth()->user()->hasRole('admin')){
-
+            # code...
             return redirect('/admin/dashboard');
 
         }elseif(auth()->user()->hasRole('Менеджер')){
-            
+            # code...
             return redirect('/manager');
+
+        }elseif (auth()->user()->hasRole('Координатор')) {
+            # code...
+            return redirect('/account');
         }
-        return redirect('/account');
+        return redirect('/');
+        
     }
 
     protected function credentials(Request $request)
     {
-        if(is_numeric($request->get('email'))){
-            
-            return ['number'=>$request->get('email'),'password'=>$request->get('password')];
+        if(filter_var($request->get('email'), FILTER_VALIDATE_EMAIL)){
+
+            return $request->only($this->username(), 'password');
+
+        }elseif(is_string($request->get('email')) ) {
+
+            return [
+                'name' => $request->get('email'),
+                'password' => $request->get('password')
+            ];
+
+        }else {
+
+            return [
+                'number' => $request->get('email'),
+                'password' => $request->get('password')
+            ];
         }
-        return $request->only($this->username(), 'password');
     }
 }
