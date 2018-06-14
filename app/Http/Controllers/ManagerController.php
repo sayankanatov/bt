@@ -37,13 +37,11 @@ class ManagerController extends Controller
         // Ссылки на меню менеджера
         $general_info_link = '/manager/general';
         $roles_link = '/manager/roles';
-        $groups_link = '/manager/groups';
         $user_base_link = '/manager/childrens';
 
         return view('manager.index',compact(
             'general_info_link',
             'roles_link',
-            'groups_link',
             'user_base_link'
         ));
     }
@@ -493,108 +491,6 @@ class ManagerController extends Controller
         return \Redirect('manager/roles'); 
     }
 
-    public function groups(Request $request)
-    {
-        //get kindergarten
-        $kindergarten = DB::table('kindergartens')->select('kindergartens.id','kindergartens.group_count')
-                        ->join('kindergarten_users','kindergarten_users.kindergarten_id','=','kindergartens.id')
-                        ->where('kindergarten_users.user_id',\Auth::user()->id)
-                        ->first();
-
-        //get all groups
-        $groups = DB::table('groups')->select('*')
-                    ->where('groups.kindergarten_id',$kindergarten->id)
-                    ->get();
-        // dd($groups);
-
-        //get flash message in view
-        $result = $kindergarten->group_count - $groups->count();
-        $converse_result = $groups->count() - $kindergarten->group_count;
-
-        if($result > 0){
-
-            \Session::flash('warning', trans('messages.you_must_add').' '.$result.' '.trans('messages.group'));
-
-        }elseif($converse_result > 0){
-
-            \Session::flash('warning', trans('messages.you_must_edit_general_info').' '.$converse_result.' '.trans('messages.group'));
-        }
-
-        $group_categories = GroupCategory::all();
-
-        $mentors = DB::table('clients')
-                ->select('clients.name','clients.telephone','roles.name as role_name','roles.description','clients.id')
-                ->join('role_clients','role_clients.client_id','=','clients.id')
-                ->join('kindergarten_clients','kindergarten_clients.client_id','=','clients.id')
-                ->join('roles','roles.id','=','role_clients.role_id')
-                ->where('kindergarten_clients.kindergarten_id',$kindergarten->id)
-                ->where('role_clients.role_id',Config::get('constants.roles.mentor'))
-                ->get();
-        //Создаем группу
-        if(!empty($request->input('group_name')) ) {
-
-            $group = new Group();
-            $group->title = $request->input('group_name');
-            $group->category = $request->get('group_category');
-            $group->child_count = $request->get('child_count');
-            $group->kindergarten_id = $kindergarten->id;
-            $group->first_mentor_id = $request->get('first_mentor');
-            $group->second_mentor_id = $request->get('second_mentor');
-
-            $group->save();
-
-            \Session::flash('message', 'Successfully created group!');
-
-            if($request->has('add-group-submit')){
-                return \Redirect('manager/groups');
-            }
-        }
-
-        return view('manager.groups',compact('groups','group_categories','mentors','rows','kindergarten'));
-    }
-
-    public function editGroup($id){
-
-        //get group for edit
-        $group = Group::find($id);
-
-        $mentors = DB::table('clients')
-                ->select('clients.name','clients.telephone','roles.name as role_name','roles.description','clients.id')
-                ->join('role_clients','role_clients.client_id','=','clients.id')
-                ->join('kindergarten_clients','kindergarten_clients.client_id','=','clients.id')
-                ->join('roles','roles.id','=','role_clients.role_id')
-                ->where('kindergarten_clients.kindergarten_id',$group->kindergarten_id)
-                ->where('role_clients.role_id',Config::get('constants.roles.mentor'))
-                ->get();
-        $group_categories = GroupCategory::all();
-        $child_counts = array(0 => 10, 1 => 15, 2 => 20, 3 => 25, 4 => 30, 5 => 35, 6 => 40, 7 => 45, 8 => 50);
-
-        return view('manager.edit_group',compact('group','mentors','group_categories','child_counts'));
-    }
-
-    public function updateGroup(Request $request, $id){
-
-        // get the group for update
-        try{
-            $group = Group::find($id);
-            $group->title = $request->input('group_name');
-            $group->category = $request->get('group_category');
-            $group->child_count = $request->get('child_count');
-            $group->first_mentor_id = $request->get('first_mentor');
-            $group->second_mentor_id = $request->get('second_mentor');
-
-            $group->save();
-
-        }catch(QueryException $e){
-            \Session::flash('oops', 'Sorry something went wrong. Please fill fields!');
-            return \Redirect('manager/groups/'.$group->id);
-        }
-
-        \Session::flash('message', 'Successfully updated!');
-
-        return \Redirect('manager/groups');
-    }
-
 /**
 * Display childrens in all groups for adding and updating
 **/ 
@@ -615,7 +511,8 @@ class ManagerController extends Controller
         if($request->has('child-submit')){
             
             $parent = new Client();
-            $parent->name = mb_convert_case($request->input('parent_name'),MB_CASE_TITLE,"UTF-8");
+            //Скрыто в связи с неактуальностью
+            // $parent->name = mb_convert_case($request->input('parent_name'),MB_CASE_TITLE,"UTF-8");
 
             if(strlen($request->input('parent_telephone')) == Config::get('constants.length.telephone')){
                 $parent->telephone = $request->input('parent_telephone');
@@ -631,7 +528,9 @@ class ManagerController extends Controller
 
             $children = new Children();
             $children->name = mb_convert_case($request->input('children_name'),MB_CASE_TITLE,"UTF-8");
-            $children->iin = $request->input('children_iin');
+            $children->is_contract = $request->input('is_contract');
+            //Скрыто в связи с неактуальностью
+            // $children->iin = $request->input('children_iin');
             $children->group()->associate($getGroup->id);
 
             $getParent = Client::where('telephone',$request->input('parent_telephone'))->first();
@@ -670,7 +569,8 @@ class ManagerController extends Controller
         try{
             $children = Children::find($id);
             $children->name = mb_convert_case($request->input('child_name'),MB_CASE_TITLE,"UTF-8" );
-            $children->iin = $request->input('child_iin');
+            //Скрыто в связи с неактуальностью
+            // $children->iin = $request->input('child_iin');
             if($children->name !== ''){
                 $children->save();
             }else {
@@ -682,7 +582,8 @@ class ManagerController extends Controller
 
             foreach ($parents as $key => $parent) {
                 # code...
-                $parent->name = mb_convert_case($request->input('parent_name'.$parent->id),MB_CASE_TITLE,"UTF-8" );
+                //Скрыто в связи с неактуальностью
+                // $parent->name = mb_convert_case($request->input('parent_name'.$parent->id),MB_CASE_TITLE,"UTF-8" );
 
                 if(strlen($request->input('parent_telephone'.$parent->id)) == Config::get('constants.length.telephone')){
                     $parent->telephone = $request->input('parent_telephone'.$parent->id);

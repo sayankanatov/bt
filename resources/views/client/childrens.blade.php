@@ -2,7 +2,7 @@
 
 @section('content')
 
-@include('includes.head-manager')
+@include('includes.head-client')
 
 <div class="col-md-12">
 	@if (\Session::has('message'))
@@ -75,7 +75,7 @@
 							    			<td>{{$children->parent->name}}</td>
 							    			<td>+7{{$children->parent->telephone}}</td>
 							    			<td>
-							    				<a class="btn btn-small btn-info" href="{{ action('ManagerController@editChild',$children->id) }}">@lang('messages.edit')</a>
+							    				<a class="btn btn-small btn-info" href="{{ action('ClientController@editChild',$children->id) }}">@lang('messages.edit')</a>
 							    			</td>
 							    		</tr>
 							    		@endforeach
@@ -170,7 +170,7 @@
       @endforeach <!-- Main foreach end-->
     </tbody>     
   </table>
-  	<a href="{{url('manager')}}" class="btn btn-secondary">
+  	<a href="{{url('user/home')}}" class="btn btn-secondary">
 		@lang('messages.back')
 	</a>
 

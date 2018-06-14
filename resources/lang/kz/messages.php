@@ -47,5 +47,7 @@ return [
 	'child' => 'child(ren)',
 	'you_must_edit_group_info' => 'В разделе Группы у Вас меньше на',
 	'you_must_add_in_group' => 'Вам необходимо добавить в данную группу',
+	'login_like_user' => 'Login like user',
+	'full_group' => 'Group is full'
 
 ];

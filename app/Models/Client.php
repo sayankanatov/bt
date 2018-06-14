@@ -5,43 +5,43 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Backpack\CRUD\CrudTrait;
 
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
-use Spatie\Permission\Traits\HasRoles;
-
-use Backpack\Base\app\Notifications\ResetPasswordNotification as ResetPasswordNotification;
+use App\Notifications\ClientResetPassword;
 
 class Client extends Authenticatable
 {
+    // use AuthenticatesUsers;
     use Notifiable;
-
-    use CrudTrait;
-    use HasRoles;
 
     /*
     |--------------------------------------------------------------------------
     | GLOBAL VARIABLES
     |--------------------------------------------------------------------------
     */
+    protected $guard = 'client';
 
     protected $table = 'clients';
     protected $primaryKey = 'id';
     public $timestamps = false;
     protected $guarded = ['id'];
-    protected $fillable = [];
-    // protected $hidden = [];
+
     // protected $dates = [];
+     protected $fillable = [
+        'name', 'password', 'telephone','role_name','email'
+    ];
+
+    protected $hidden = [
+        'password','remember_token'
+    ];
 
     /*
     |--------------------------------------------------------------------------
     | FUNCTIONS
     |--------------------------------------------------------------------------
     */
-    public function sendPasswordResetNotification($token)
-    {
-        $this->notify(new ResetPasswordNotification($token));
-    }
+    
     /*
     |--------------------------------------------------------------------------
     | RELATIONS
@@ -79,4 +79,8 @@ class Client extends Authenticatable
     | MUTATORS
     |--------------------------------------------------------------------------
     */
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new ClientResetPassword($token));
+    }
 }

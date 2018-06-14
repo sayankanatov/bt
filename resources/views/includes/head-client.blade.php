@@ -2,11 +2,6 @@
 @if (Route::has('login'))
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-        <ul class="navbar-nav">
-            <li class="nav-item active">
-                <a class="btn btn-success" href="{{ url(App\Http\Middleware\LocaleMiddleware::getLocale() .'/'.'user/login') }}">@lang('messages.login_like_user')</a>
-            </li>
-        </ul>
         
         <ul class="navbar-nav ml-md-auto">
             <li class="nav-item dropdown">
@@ -21,18 +16,19 @@
                 <a class="btn btn-primary" style="margin-right:5%;" href="#">{{ \Auth::user()->name }}</a>
             </li>
             <li class="nav-item">
-                <a class="btn btn-danger"  style="margin-left:5%;" href="{{ url('logout') }}" 
-                            onclick="event.preventDefault();
-                            document.getElementById('logout-form').submit();">@lang('messages.logout')
+                <a class="btn btn-danger"  style="margin-left:5%;" href="{{ url('/user/logout') }}"
+                    onclick="event.preventDefault();
+                     document.getElementById('logout-form').submit();">
+                    @lang('messages.logout')
                 </a>
-                <form id="logout-form" action="{{ url('logout') }}" method="POST" style="display: none;">
-                            @csrf
-                    </form>
+                
+                <form id="logout-form" action="{{ url('/user/logout') }}" method="POST" style="display: none;">
+                    {{ csrf_field() }}
+                </form>
             </li>
         @else
-
             <li class="nav-item">
-                <a class="btn btn-primary" href="{{ url(App\Http\Middleware\LocaleMiddleware::getLocale() .'/'.'login') }}">@lang('messages.login')</a>
+                <a class="btn btn-primary" href="{{ url(App\Http\Middleware\LocaleMiddleware::getLocale() .'/'.'user/login') }}">@lang('messages.login')</a>
             </li>
         @endauth 
         </ul>

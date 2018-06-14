@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="col-md-12">
-      @include('includes.head-manager')  
+      @include('includes.head-client')  
 </div>
 <div class="col-md-12">
 	@if (\Session::has('oops'))
@@ -18,7 +18,7 @@
 </div>
 
 <div class="col-md-6">
-	<form role="form" action="{{action('ManagerController@updateChild',['id' => $children->id] ) }}" method="post">
+	<form role="form" action="{{action('ClientController@updateChild',['id' => $children->id] ) }}" method="post">
 		@csrf
 		<div class="form-group">				 
 			<label>
@@ -65,7 +65,7 @@
 		<button type="submit" class="btn btn-primary">
 			@lang('messages.submit')
 		</button>
-		<a href="{{url('manager/childrens')}}" class="btn btn-secondary">
+		<a href="{{url('user/childrens')}}" class="btn btn-secondary">
 			@lang('messages.back')
 		</a>
 	</form>

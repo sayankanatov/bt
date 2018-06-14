@@ -25,11 +25,11 @@
                 <a class="btn btn-primary" style="margin-right:5%;" href="#">{{ \Auth::user()->name }}</a>
             </li>
             <li class="nav-item">
-                <a class="btn btn-danger"  style="margin-left:5%;" href="{{ route('logout') }}" 
+                <a class="btn btn-danger"  style="margin-left:5%;" href="{{ url('logout') }}" 
                             onclick="event.preventDefault();
                             document.getElementById('logout-form').submit();">@lang('messages.logout')
                 </a>
-                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                <form id="logout-form" action="{{ url('logout') }}" method="POST" style="display: none;">
                             @csrf
                     </form>
             </li>

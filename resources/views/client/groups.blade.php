@@ -2,7 +2,7 @@
 
 @section('content')
 
-@include('includes.head-manager')
+@include('includes.head-client')
 
 <div class="col-md-12">
   @if (\Session::has('message'))
@@ -52,7 +52,7 @@
             @endforeach
           </td>
           <td>
-            <a class="btn btn-small btn-info" href="{{ action('ManagerController@editGroup',$group->id) }}">@lang('messages.edit')</a>
+            <a class="btn btn-small btn-info" href="{{ action('ClientController@editGroup',$group->id) }}">@lang('messages.edit')</a>
           </td>
         </tr>
         
@@ -65,7 +65,7 @@
 @if($kindergarten->group_count - $groups->count() > 0)
 <div class="col-md-12">
   <a id="modal-769746" href="#modal-container-769746" role="button" class="btn btn-success" data-toggle="modal">@lang('messages.add_group')</a>
-  <a href="{{url('manager')}}" class="btn btn-secondary">
+  <a href="{{url('user/home')}}" class="btn btn-secondary">
     @lang('messages.back')
   </a>
       

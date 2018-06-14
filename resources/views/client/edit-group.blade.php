@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="col-md-12">
-      @include('includes.head-manager')  
+      @include('includes.head-client')  
 </div>
 <div class="col-md-12">
 	
@@ -19,7 +19,7 @@
 </div>
 
 <div class="col-md-6">
-	<form role="form" action="{{action('ManagerController@updateGroup',['id' => $group->id])}}" method="post">
+	<form role="form" action="{{action('ClientController@updateGroup',['id' => $group->id])}}" method="post">
 		@csrf
 		<div class="form-group">				 
 			<label>
@@ -68,7 +68,7 @@
 		<button type="submit" class="btn btn-primary">
 			@lang('messages.submit')
 		</button>
-		<a href="{{url('manager/groups')}}" class="btn btn-secondary">
+		<a href="{{url('user/groups')}}" class="btn btn-secondary">
 			@lang('messages.back')
 		</a>
 	</form>

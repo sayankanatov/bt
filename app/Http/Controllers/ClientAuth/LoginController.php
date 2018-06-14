@@ -1,10 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace App\Http\Controllers\ClientAuth;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Support\Facades\Auth;
+use Hesto\MultiAuth\Traits\LogsoutGuard;
+use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
@@ -19,14 +21,16 @@ class LoginController extends Controller
     |
     */
 
-    use AuthenticatesUsers;
+    use AuthenticatesUsers, LogsoutGuard {
+        LogsoutGuard::logout insteadof AuthenticatesUsers;
+    }
 
     /**
-     * Where to redirect users after login.
+     * Where to redirect users after login / registration.
      *
      * @var string
      */
-    protected $redirectTo = '/account';
+    public $redirectTo = '/user/home';
 
     /**
      * Create a new controller instance.
@@ -35,25 +39,27 @@ class LoginController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('guest')->except('logout');
+        $this->middleware('client.guest', ['except' => 'logout']);
     }
 
-    public function authenticated()
+    /**
+     * Show the application's login form.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function showLoginForm()
     {
-        if(auth()->user()->hasRole('admin')){
-            # code...
-            return redirect('/admin/dashboard');
+        return view('client.auth.login');
+    }
 
-        }elseif(auth()->user()->hasRole('Менеджер')){
-            # code...
-            return redirect('/manager');
-
-        }elseif (auth()->user()->hasRole('Координатор')) {
-            # code...
-            return redirect('/account');
-        }
-        return redirect('/');
-        
+    /**
+     * Get the guard to be used during authentication.
+     *
+     * @return \Illuminate\Contracts\Auth\StatefulGuard
+     */
+    protected function guard()
+    {
+        return Auth::guard('client');
     }
 
     protected function credentials(Request $request)
@@ -62,13 +68,12 @@ class LoginController extends Controller
 
             return $request->only($this->username(), 'password');
 
-        }elseif(is_string($request->get('email')) ) {
+        }else {
 
             return [
-                'name' => $request->get('email'),
+                'telephone' => $request->get('email'),
                 'password' => $request->get('password')
             ];
-
         }
     }
 }

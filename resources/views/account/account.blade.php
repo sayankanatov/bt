@@ -20,8 +20,8 @@
             <li class="nav-item dropdown">
                 <a class="dropdown-toggle btn" href="http://example.com" id="navbarDropdownMenuLink" data-toggle="dropdown">Язык</a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
-                    <a class="dropdown-item btn btn-warning" href="{{route('setlocale', ['lang' => 'kz'])}}"><span class="flag-icon flag-icon-kz"></span> KZ</a> 
-                    <a class="dropdown-item btn btn-danger" href="{{route('setlocale', ['lang' => 'ru'])}}"><span class="flag-icon flag-icon-ru"></span> RU</a> 
+                    <a class="dropdown-item btn btn-warning" href="{{route('setlocale', ['lang' => 'kz'])}}"><span class="flag-icon flag-icon-kz"></span> Қазақ</a> 
+                    <a class="dropdown-item btn btn-danger" href="{{route('setlocale', ['lang' => 'ru'])}}"><span class="flag-icon flag-icon-ru"></span> Русский</a> 
                 </div>
             </li>
         @auth
@@ -29,11 +29,11 @@
                 <a class="btn btn-primary" style="margin-right:5%;" href="#">{{ \Auth::user()->name }}</a>
             </li>
             <li class="nav-item">
-                <a class="btn btn-danger"  style="margin-left:5%;" href="{{ route('logout') }}" 
+                <a class="btn btn-danger"  style="margin-left:5%;" href="{{ url('logout') }}" 
                             onclick="event.preventDefault();
                             document.getElementById('logout-form').submit();">@lang('messages.logout')
                 </a>
-                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                <form id="logout-form" action="{{ url('logout') }}" method="POST" style="display: none;">
                             @csrf
                     </form>
             </li>

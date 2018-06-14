@@ -11,9 +11,6 @@
                 <a class="btn btn-secondary" href="{{url('/manager/roles')}}">@lang('messages.roles')</a>
             </li>
             <li class="nav-item">
-                <a class="btn btn-success" href="{{url('/manager/groups')}}">@lang('messages.groups')</a>
-            </li>
-            <li class="nav-item">
                 <a class="btn btn-warning" href="{{url('/manager/childrens')}}">@lang('messages.users')</a>
             </li>
         </ul>
@@ -31,11 +28,11 @@
                 <a class="btn btn-primary" style="margin-right:5%;" href="#">{{ \Auth::user()->name }}</a>
             </li>
             <li class="nav-item">
-                <a class="btn btn-danger"  style="margin-left:5%;" href="{{ route('logout') }}" 
+                <a class="btn btn-danger"  style="margin-left:5%;" href="{{ url('logout') }}" 
                             onclick="event.preventDefault();
                             document.getElementById('logout-form').submit();">@lang('messages.logout')
                 </a>
-                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                <form id="logout-form" action="{{ url('logout') }}" method="POST" style="display: none;">
                             @csrf
                     </form>
             </li>
