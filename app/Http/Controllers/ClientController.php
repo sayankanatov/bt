@@ -159,8 +159,17 @@ class ClientController extends Controller
         //get group for edit
         $group = Group::find($id);
 
+        $mentors = DB::table('clients')
+                ->select('clients.name','clients.telephone','roles.name as role_name','roles.description','clients.id')
+                ->join('role_clients','role_clients.client_id','=','clients.id')
+                ->join('kindergarten_clients','kindergarten_clients.client_id','=','clients.id')
+                ->join('roles','roles.id','=','role_clients.role_id')
+                ->where('kindergarten_clients.kindergarten_id',$group->kindergarten_id)
+                ->where('role_clients.role_id',Config::get('constants.roles.mentor'))
+                ->get();
+
         $existInFirstMentors = DB::table('clients')
-            ->select('clients.id')
+            ->select('clients.id','clients.name')
             ->join('role_clients','role_clients.client_id','=','clients.id')
             ->join('kindergarten_clients','kindergarten_clients.client_id','=','clients.id')
             ->join('groups','groups.first_mentor_id','=','clients.id')
@@ -204,7 +213,7 @@ class ClientController extends Controller
         $group_categories = GroupCategory::all();
         $child_counts = array(0 => 10, 1 => 15, 2 => 20, 3 => 25, 4 => 30, 5 => 35, 6 => 40, 7 => 45, 8 => 50);
 
-        return view('client.edit-group',compact('group','group_categories','child_counts','notExistInFirstMentors','notExistInSecondMentors'));
+        return view('client.edit-group',compact('group','group_categories','child_counts','notExistInFirstMentors','notExistInSecondMentors','mentors'));
     }
 
     public function updateGroup(Request $request, $id){

@@ -43,12 +43,16 @@
           <td>{{$group->category}}</td>
           <td>{{$group->child_count}}</td>
           <td>
-            @foreach($mentors as $mentor)
-            @if($mentor->id == $group->first_mentor_id)
-            {{$mentor->name}}<br>
-            @elseif($mentor->id == $group->second_mentor_id)
-            {{$mentor->name}}<br>
-            @endif
+            @foreach($mentors as $first_mentor)
+              @if($first_mentor->id == $group->first_mentor_id)
+                {{$first_mentor->name}}<br>
+              @endif
+            @endforeach
+
+            @foreach($mentors as $second_mentor)
+              @if($second_mentor->id == $group->second_mentor_id)
+                {{$second_mentor->name}}<br>
+              @endif
             @endforeach
           </td>
           <td>

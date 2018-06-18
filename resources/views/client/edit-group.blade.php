@@ -51,18 +51,29 @@
             </label>
             <select class="form-control" name="first_mentor">
                 @isset($notExistInFirstMentors)
+                @foreach($mentors as $mentor)
+	                @if($mentor->id == $group->first_mentor_id)
+	                	<option value="{{$mentor->id}}" selected="selected">{{$mentor->name}}</option>
+	                @endif
+                @endforeach
                   	@foreach($notExistInFirstMentors as $mentor)
-				    <option value="{{$mentor->id}}" {{ $mentor->id == $group->first_mentor_id ? 'selected' : ''}}>{{$mentor->name}}</option>
+				    <option value="{{$mentor->id}}">{{$mentor->name}}</option>
 				    @endforeach
 				@endisset
 			</select>
 			<select class="form-control" name="second_mentor">
-				@isset($notExistInSecondMentors)
-						<option value="0">---</option>
-	                @foreach($notExistInSecondMentors as $mentor)
-					    <option value="{{$mentor->id}}" {{ $mentor->id == $group->second_mentor_id ? 'selected' : ''}}>{{$mentor->name}}</option>
-					@endforeach
-				@endisset
+			@isset($notExistInSecondMentors)
+				<option value="0">---</option>
+				@foreach($mentors as $mentor)
+	                @if($mentor->id == $group->second_mentor_id)
+	                	<option value="{{$mentor->id}}" selected="selected">{{$mentor->name}}</option>
+	                @endif
+                @endforeach
+
+	            @foreach($notExistInSecondMentors as $mentor)
+				    <option value="{{$mentor->id}}" {{ $mentor->id == $group->second_mentor_id ? 'selected' : ''}}>{{$mentor->name}}</option>
+				@endforeach
+			@endisset
 			</select>
 		</div>
 		<button type="submit" class="btn btn-primary">
