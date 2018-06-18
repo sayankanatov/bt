@@ -50,16 +50,16 @@
                 @lang('messages.mentors')
             </label>
             <select class="form-control" name="first_mentor">
-                @isset($mentors)
-                  	@foreach($mentors as $mentor)
+                @isset($notExistInFirstMentors)
+                  	@foreach($notExistInFirstMentors as $mentor)
 				    <option value="{{$mentor->id}}" {{ $mentor->id == $group->first_mentor_id ? 'selected' : ''}}>{{$mentor->name}}</option>
 				    @endforeach
 				@endisset
 			</select>
 			<select class="form-control" name="second_mentor">
-				@isset($mentors)
+				@isset($notExistInSecondMentors)
 						<option value="0">---</option>
-	                @foreach($mentors as $mentor)
+	                @foreach($notExistInSecondMentors as $mentor)
 					    <option value="{{$mentor->id}}" {{ $mentor->id == $group->second_mentor_id ? 'selected' : ''}}>{{$mentor->name}}</option>
 					@endforeach
 				@endisset
@@ -68,7 +68,7 @@
 		<button type="submit" class="btn btn-primary">
 			@lang('messages.submit')
 		</button>
-		<a href="{{url('user/groups')}}" class="btn btn-secondary">
+		<a href="{{url(App\Http\Middleware\LocaleMiddleware::getLocale().'/user/groups')}}" class="btn btn-secondary">
 			@lang('messages.back')
 		</a>
 	</form>

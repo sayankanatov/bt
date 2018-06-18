@@ -65,7 +65,7 @@
 @if($kindergarten->group_count - $groups->count() > 0)
 <div class="col-md-12">
   <a id="modal-769746" href="#modal-container-769746" role="button" class="btn btn-success" data-toggle="modal">@lang('messages.add_group')</a>
-  <a href="{{url('user/home')}}" class="btn btn-secondary">
+  <a href="{{url(App\Http\Middleware\LocaleMiddleware::getLocale().'/user/home')}}" class="btn btn-secondary">
     @lang('messages.back')
   </a>
       
@@ -108,16 +108,16 @@
                     @lang('messages.mentors')
                   </label>
                   <select class="form-control" name="first_mentor">
-                    @isset($mentors)
-                    @foreach($mentors as $mentor)
-                    <option value="{{$mentor->id}}">{{$mentor->name}}</option>
+                    @isset($notExistInFirstMentors)
+                    @foreach($notExistInFirstMentors as $mentor)
+                        <option value="{{$mentor->id}}">{{$mentor->name}}</option>
                     @endforeach
                     @endisset
                   </select>
                   <select class="form-control" name="second_mentor">
-                    @isset($mentors)
+                    @isset($notExistInSecondMentors)
                     <option value="0">---</option>
-                    @foreach($mentors as $mentor)
+                    @foreach($notExistInSecondMentors as $mentor)
                     <option value="{{$mentor->id}}">{{$mentor->name}}</option>
                     @endforeach
                     @endisset

@@ -150,7 +150,8 @@ class AccountController extends Controller
         return \Redirect::to('account/kindergarten');
     }
 
-    // show item
+    // метод show нужен для реализации, но не функционирует на данный момент
+    
     public function show($id)
     {
         // show

@@ -140,17 +140,17 @@
 					  </div>
 					  <input type="tel" class="form-control" name="parent_telephone" required="required" data-mask="(000)000 00 00" data-mask-selectonfocus="true" placeholder="(___)__ __ __"/>
 					</div>
-					<label>Основание для зачисления в ДДО</label>
+					<label>@lang('messages.enlistment_in_ddo')</label>
 					<div class="form-check">
 					  <input class="form-check-input" type="radio" name="is_contract" id="exampleRadios1" value="0" checked>
 					  <label class="form-check-label" for="exampleRadios1">
-					    Направление
+					    @lang('messages.direction')
 					  </label>
 					</div>
 					<div class="form-check">
 					  <input class="form-check-input" type="radio" name="is_contract" id="exampleRadios2" value="1">
 					  <label class="form-check-label" for="exampleRadios2">
-					    Договор с сотрудником
+					    @lang('messages.contract_with_employee')
 					  </label>
 					</div>
                   	<input type="hidden" name="group_id" value="{{$group->id}}">
@@ -170,7 +170,7 @@
       @endforeach <!-- Main foreach end-->
     </tbody>     
   </table>
-  	<a href="{{url('user/home')}}" class="btn btn-secondary">
+  	<a href="{{url(App\Http\Middleware\LocaleMiddleware::getLocale().'/user/home')}}" class="btn btn-secondary">
 		@lang('messages.back')
 	</a>
 

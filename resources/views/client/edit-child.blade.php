@@ -34,7 +34,7 @@
             <input type="tel" class="form-control" name="child_iin" value="{{$children->iin}}" data-mask="000000000000" data-mask-selectonfocus="true" required="required" />
 		</div> -->
 		<h4>
-			Родители
+			@lang('messages.parents')
 		</h4>
 		@isset($parents)
 		@foreach($parents as $key => $parent)
@@ -65,7 +65,7 @@
 		<button type="submit" class="btn btn-primary">
 			@lang('messages.submit')
 		</button>
-		<a href="{{url('user/childrens')}}" class="btn btn-secondary">
+		<a href="{{url(App\Http\Middleware\LocaleMiddleware::getLocale().'/user/childrens')}}" class="btn btn-secondary">
 			@lang('messages.back')
 		</a>
 	</form>

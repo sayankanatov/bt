@@ -5,19 +5,19 @@
         
         <ul class="navbar-nav">
             <li class="nav-item">
-                <a class="btn btn-primary" href="{{url('/manager/general')}}">@lang('messages.general_info')</a>
+                <a class="btn btn-primary" href="{{url(App\Http\Middleware\LocaleMiddleware::getLocale().'/manager/general')}}">@lang('messages.general_info')</a>
             </li>
             <li class="nav-item">
-                <a class="btn btn-secondary" href="{{url('/manager/roles')}}">@lang('messages.roles')</a>
+                <a class="btn btn-secondary" href="{{url(App\Http\Middleware\LocaleMiddleware::getLocale().'/manager/roles')}}">@lang('messages.roles')</a>
             </li>
             <li class="nav-item">
-                <a class="btn btn-warning" href="{{url('/manager/childrens')}}">@lang('messages.users')</a>
+                <a class="btn btn-warning" href="{{url(App\Http\Middleware\LocaleMiddleware::getLocale().'/manager/childrens')}}">@lang('messages.users')</a>
             </li>
         </ul>
         
         <ul class="navbar-nav ml-md-auto">
             <li class="nav-item dropdown">
-                <a class="dropdown-toggle btn" href="http://example.com" id="navbarDropdownMenuLink" data-toggle="dropdown">Язык</a>
+                <a class="dropdown-toggle btn" href="http://example.com" id="navbarDropdownMenuLink" data-toggle="dropdown">@lang('messages.language')</a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
                     <a class="dropdown-item btn btn-warning" href="{{route('setlocale', ['lang' => 'kz'])}}"><span class="flag-icon flag-icon-kz"></span> Қазақ</a> 
                     <a class="dropdown-item btn btn-danger" href="{{route('setlocale', ['lang' => 'ru'])}}"><span class="flag-icon flag-icon-ru"></span> Русский</a> 

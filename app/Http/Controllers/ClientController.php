@@ -85,20 +85,52 @@ class ClientController extends Controller
                 ->where('role_clients.role_id',Config::get('constants.roles.mentor'))
                 ->get();
 
-        // $notInFirstMentors = DB::table('clients')
-        // 	->select('clients.id')
-        //     ->join('groups.first_mentor_id','=','clients.id')
-        //     ->whereNotIn('groups.first_mentor_id', function($query){
-        //     	$query->select('clients.id')
-        //         ->join('role_clients','role_clients.client_id','=','clients.id')
-        //         ->join('kindergarten_clients','kindergarten_clients.client_id','=','clients.id')
-        //         ->join('roles','roles.id','=','role_clients.role_id')
-        //         ->where('kindergarten_clients.kindergarten_id',$kindergarten->id)
-        //         ->where('role_clients.role_id',Config::get('constants.roles.mentor'))
-        //         ->from('clients');})
-        //     ->get();
+        //выборка воспитателей стала ограниченной таким образом что воспитатели не могут быть одновременно быть в двух разных группах.
 
-        // dd($notInFirstMentors);
+        $existInFirstMentors = DB::table('clients')
+            ->select('clients.id')
+            ->join('role_clients','role_clients.client_id','=','clients.id')
+            ->join('kindergarten_clients','kindergarten_clients.client_id','=','clients.id')
+            ->join('groups','groups.first_mentor_id','=','clients.id')
+            ->where('kindergarten_clients.kindergarten_id',$kindergarten->id)
+            ->where('role_clients.role_id',Config::get('constants.roles.mentor'))
+            ->distinct()
+            ->pluck('clients.id')
+            ->toArray();
+
+        $existInSecondMentors = DB::table('clients')
+            ->select('clients.id')
+            ->join('role_clients','role_clients.client_id','=','clients.id')
+            ->join('kindergarten_clients','kindergarten_clients.client_id','=','clients.id')
+            ->join('groups','groups.second_mentor_id','=','clients.id')
+            ->where('kindergarten_clients.kindergarten_id',$kindergarten->id)
+            ->where('role_clients.role_id',Config::get('constants.roles.mentor'))
+            ->distinct()
+            ->pluck('clients.id')
+            ->toArray();
+
+        $notExistInFirstMentors = DB::table('clients')
+                ->select('clients.name','clients.telephone','roles.name as role_name','roles.description','clients.id')
+                ->join('role_clients','role_clients.client_id','=','clients.id')
+                ->join('kindergarten_clients','kindergarten_clients.client_id','=','clients.id')
+                ->join('roles','roles.id','=','role_clients.role_id')
+                ->where('kindergarten_clients.kindergarten_id',$kindergarten->id)
+                ->where('role_clients.role_id',Config::get('constants.roles.mentor'))
+                ->whereNotIn('clients.id',$existInFirstMentors)
+                ->get();
+
+        $notExistInSecondMentors = DB::table('clients')
+                ->select('clients.name','clients.telephone','roles.name as role_name','roles.description','clients.id')
+                ->join('role_clients','role_clients.client_id','=','clients.id')
+                ->join('kindergarten_clients','kindergarten_clients.client_id','=','clients.id')
+                ->join('roles','roles.id','=','role_clients.role_id')
+                ->where('kindergarten_clients.kindergarten_id',$kindergarten->id)
+                ->where('role_clients.role_id',Config::get('constants.roles.mentor'))
+                ->whereNotIn('clients.id',$existInSecondMentors)
+                ->get();
+        	
+        // dd($notExistInSecondMentors);
+
         //Создаем группу
         if(!empty($request->input('group_name')) ) {
 
@@ -119,7 +151,7 @@ class ClientController extends Controller
             }
         }
 
-        return view('client.groups',compact('groups','group_categories','mentors','rows','kindergarten'));
+        return view('client.groups',compact('groups','group_categories','mentors','rows','kindergarten','notExistInFirstMentors','notExistInSecondMentors'));
     }
 
     public function editGroup($id){
@@ -127,18 +159,52 @@ class ClientController extends Controller
         //get group for edit
         $group = Group::find($id);
 
-        $mentors = DB::table('clients')
+        $existInFirstMentors = DB::table('clients')
+            ->select('clients.id')
+            ->join('role_clients','role_clients.client_id','=','clients.id')
+            ->join('kindergarten_clients','kindergarten_clients.client_id','=','clients.id')
+            ->join('groups','groups.first_mentor_id','=','clients.id')
+            ->where('kindergarten_clients.kindergarten_id',$group->kindergarten_id)
+            ->where('role_clients.role_id',Config::get('constants.roles.mentor'))
+            ->distinct()
+            ->pluck('clients.id')
+            ->toArray();
+
+        $existInSecondMentors = DB::table('clients')
+            ->select('clients.id')
+            ->join('role_clients','role_clients.client_id','=','clients.id')
+            ->join('kindergarten_clients','kindergarten_clients.client_id','=','clients.id')
+            ->join('groups','groups.second_mentor_id','=','clients.id')
+            ->where('kindergarten_clients.kindergarten_id',$group->kindergarten_id)
+            ->where('role_clients.role_id',Config::get('constants.roles.mentor'))
+            ->distinct()
+            ->pluck('clients.id')
+            ->toArray();
+
+        $notExistInFirstMentors = DB::table('clients')
                 ->select('clients.name','clients.telephone','roles.name as role_name','roles.description','clients.id')
                 ->join('role_clients','role_clients.client_id','=','clients.id')
                 ->join('kindergarten_clients','kindergarten_clients.client_id','=','clients.id')
                 ->join('roles','roles.id','=','role_clients.role_id')
                 ->where('kindergarten_clients.kindergarten_id',$group->kindergarten_id)
                 ->where('role_clients.role_id',Config::get('constants.roles.mentor'))
+                ->whereNotIn('clients.id',$existInFirstMentors)
                 ->get();
+
+        $notExistInSecondMentors = DB::table('clients')
+                ->select('clients.name','clients.telephone','roles.name as role_name','roles.description','clients.id')
+                ->join('role_clients','role_clients.client_id','=','clients.id')
+                ->join('kindergarten_clients','kindergarten_clients.client_id','=','clients.id')
+                ->join('roles','roles.id','=','role_clients.role_id')
+                ->where('kindergarten_clients.kindergarten_id',$group->kindergarten_id)
+                ->where('role_clients.role_id',Config::get('constants.roles.mentor'))
+                ->whereNotIn('clients.id',$existInSecondMentors)
+                ->get();
+
         $group_categories = GroupCategory::all();
         $child_counts = array(0 => 10, 1 => 15, 2 => 20, 3 => 25, 4 => 30, 5 => 35, 6 => 40, 7 => 45, 8 => 50);
 
-        return view('client.edit-group',compact('group','mentors','group_categories','child_counts'));
+        return view('client.edit-group',compact('group','group_categories','child_counts','notExistInFirstMentors','notExistInSecondMentors'));
     }
 
     public function updateGroup(Request $request, $id){

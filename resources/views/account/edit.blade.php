@@ -15,7 +15,7 @@
 	@csrf
 	<div class="form-group">				 
 		<label for="exampleInputName">
-			Name
+			@lang('messages.title')
 		</label>
 		<input type="text" class="form-control" id="exampleInputName" name="KindergartenName" value="{{$kindergarten->name}}" />
 	</div>
@@ -26,10 +26,10 @@
 		<input type="text" class="form-control" id="exampleInputNum" name="num" value="{{$kindergarten->num}}" />
 	</div>
 	<button type="submit" class="btn btn-primary">
-		Submit
+		@lang('messages.submit')
 	</button>
-	<a href="{{url('account/kindergarten')}}" class="btn btn-secondary">
-		Back
+	<a href="{{url(App\Http\Middleware\LocaleMiddleware::getLocale().'/account/kindergarten')}}" class="btn btn-secondary">
+		@lang('messages.back')
 	</a>
 </form>
 </div>

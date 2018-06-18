@@ -59,7 +59,7 @@
 @endif
 <div class="col-md-12">
   <a id="modal-769746" href="#modal-container-769746" role="button" class="btn btn-success" data-toggle="modal">@lang('messages.add_kindergarten')</a>
-  <a href="{{url('account')}}" class="btn btn-secondary">
+  <a href="{{url(App\Http\Middleware\LocaleMiddleware::getLocale().'/account')}}" class="btn btn-secondary">
     @lang('messages.back')
   </a>
       

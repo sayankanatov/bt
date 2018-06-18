@@ -20,7 +20,7 @@
 		@csrf
 		<div class="form-group row">				 
 			<label class="col-2 col-form-label">
-				Наименование
+				@lang('messages.category')
 			</label>
 			<div class="col-10">
 				<select class="form-control" name="kindergarten_category">
@@ -52,7 +52,7 @@
 		</div>
 		<div class="form-group row">
 			<label for="exampleInputName" class="col-2 col-form-label">
-				Название
+				@lang('messages.title')
 			</label>
 			<div class="col-10">
 				<input type="text" class="form-control" id="exampleInputName" value="{{$kindergarten->name}}" readonly="true"/>
@@ -90,11 +90,11 @@
 			</div>
 		</div> -->
 		<h4>
-			Контакты
+			@lang('messages.contacts')
 		</h4>
 		
 		<div class="form-group row" style="display: none;">
-			<label class="col-2 col-form-label">Область</label>
+			<label class="col-2 col-form-label">@lang('messages.region')</label>
 			<div class="col-10">
 				<input type="hidden" class="form-control" name="region" value="{{$kindergarten->region_ru}}" readonly="true" />
 			</div>
@@ -102,7 +102,7 @@
 		
 		<div class="form-group row">	
 			<label for="exampleInputCity" class="col-2 col-form-label">
-				Город
+				@lang('messages.city')
 			</label>
 			<div class="col-10">
 				<input type="text" class="form-control" id="exampleInputCity" name="city" value="{{$kindergarten->description}}" readonly="true" />
@@ -111,7 +111,7 @@
 		
 		<div class="form-group row">	
 			<label for="exampleInputAddress" class="col-2 col-form-label">
-				Адрес
+				@lang('messages.address')
 			</label>
 			<div class="col-10">
 				<input type="text" class="form-control" id="exampleInputAddress" value="{{$kinder_info->address}}" name="address" required="required"/>
@@ -119,7 +119,7 @@
 		</div>
 		<div class="form-group row">
 			<label class="col-2 col-form-label">
-				Тел/Факс
+				@lang('messages.tel_and_fax')
 			</label>
 
 			<div class="input-group col-10">
@@ -132,7 +132,7 @@
 		</div>
 		<div class="form-group row">
 			<label for="exampleInputEmail" class="col-2 col-form-label">
-				E-mail
+				@lang('messages.email')
 			</label>
 			<div class="col-10">
 				<input type="text" class="form-control" id="exampleInputEmail" value="{{$kindergarten->email}}" name="email" readonly="true"/>
@@ -140,7 +140,7 @@
 		</div>
 		@if(!empty($kindergarten_langs))
 		<div class="form-group row">
-			<label for="sel1" class="col-2 col-form-label">Язык обучения</label>
+			<label for="sel1" class="col-2 col-form-label">@lang('messages.education_language')</label>
 			<div class="col-10">
 			<select class="form-control" name="lang">
 				@foreach($kindergarten_langs as $lang)	
@@ -150,12 +150,10 @@
 			</div>
 		</div>
 		@endif
-		<h4>
-			Режим работы
-		</h4>
+		<h4>@lang('messages.work_time')</h4>
 		
 		<div class="form-group row">
-			<label for="sel1" class="col-2 col-form-label">Начало</label>
+			<label for="sel1" class="col-2 col-form-label">@lang('messages.work_time_start')</label>
 			<div class="col-10">
 			<select class="form-control" name="worktime_start">
 			@isset($worktime_start)
@@ -167,7 +165,7 @@
 			</div>
 		</div>
 		<div class="form-group row">
-			<label for="sel1" class="col-2 col-form-label">Конец</label>
+			<label for="sel1" class="col-2 col-form-label">@lang('messages.work_time_end')</label>
 			<div class="col-10">
 			<select class="form-control" name="worktime_end">
 			@isset($worktime_end)
@@ -179,7 +177,7 @@
 			</div>
 		</div>
 		<div class="form-group row">
-			<label for="sel1" class="col-2 col-form-label">Время окончания приема детей</label>
+			<label for="sel1" class="col-2 col-form-label">@lang('messages.child_reception')</label>
 			<div class="col-10">
 			<select class="form-control" name="child_reception">
 			@isset($worktime_end)
@@ -192,7 +190,7 @@
 		</div>
 		
 		<div class="form-group row">
-			<label for="exampleInputGroup" class="col-2 col-form-label">Количество групп</label>
+			<label for="exampleInputGroup" class="col-2 col-form-label">@lang('messages.group_count')</label>
 			<div class="col-10">
 			<input type="number" class="form-control" id="exampleInputGroup" value="{{$kinder_info->group_count}}" name="group_count" required="required"/>
 			</div>
@@ -200,7 +198,7 @@
 		
 		<div class="form-group row">	
 			<label for="exampleInputCapacity" class="col-2 col-form-label">
-				Проектная мощность
+				@lang('messages.project_capacity')
 			</label>
 			<div class="col-10">
 				<input type="number" class="form-control" id="exampleInputCapacity" name="project_capacity" value="{{$kinder_info->project_capacity}}" required="required"/>
@@ -210,7 +208,7 @@
 		<button type="submit" class="btn btn-primary">
 			@lang('messages.submit')
 		</button>
-		<a href="{{url('manager')}}" class="btn btn-secondary">
+		<a href="{{url(App\Http\Middleware\LocaleMiddleware::getLocale().'/manager')}}" class="btn btn-secondary">
 			@lang('messages.back')
 		</a>
 	</form>
