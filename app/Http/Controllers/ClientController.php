@@ -8,6 +8,7 @@ use App\Models\Client;
 use App\Models\GroupCategory;
 use App\Models\Group;
 use App\Models\Children;
+use App\Models\Setting;
 
 use DB;
 use Config;
@@ -28,7 +29,6 @@ class ClientController extends Controller
 
     public function index()
     {
-    	$deputy_link = '/user/deputy';
     	$metodist_link = '/user/groups';
     	$nurse_link = '/user/menus';
     	$accountant_link = '/user/contractors';
@@ -43,7 +43,7 @@ class ClientController extends Controller
         		->first();
         // dd($user);
 
-        return view('client.home',compact('user','deputy_link','metodist_link','nurse_link','accountant_link','storekeeper_link','mentor_link','parent_link'));
+        return view('client.home',compact('user','metodist_link','nurse_link','accountant_link','storekeeper_link','mentor_link','parent_link'));
     }
 
     public function groups(Request $request)
@@ -55,103 +55,114 @@ class ClientController extends Controller
             ->where('kindergarten_clients.client_id',\Auth::user()->id)
             ->first();
 
-        //get all groups
-        $groups = DB::table('groups')->select('*')
-                    ->where('groups.kindergarten_id',$kindergarten->id)
-                    ->get();
-        // dd($groups);
+        $right_settings = Setting::where('kindergarten_id',$kindergarten->id)->first();
 
-        //get flash message in view
-        $result = $kindergarten->group_count - $groups->count();
-        $converse_result = $groups->count() - $kindergarten->group_count;
+        //check setting permissions
+        if($right_settings->is_group_module == 1){
+            //get all groups
+            $groups = DB::table('groups')->select('*')
+                        ->where('groups.kindergarten_id',$kindergarten->id)
+                        ->get();
+            // dd($groups);
 
-        if($result > 0){
+            //get flash message in view
+            $result = $kindergarten->group_count - $groups->count();
+            $converse_result = $groups->count() - $kindergarten->group_count;
 
-            \Session::flash('warning', trans('messages.you_must_add').' '.$result.' '.trans('messages.group'));
+            if($result > 0){
 
-        }elseif($converse_result > 0){
+                \Session::flash('warning', trans('messages.you_must_add').' '.$result.' '.trans('messages.group'));
 
-            \Session::flash('warning', trans('messages.you_must_edit_general_info').' '.$converse_result.' '.trans('messages.group'));
-        }
+            }elseif($converse_result > 0){
 
-        $group_categories = GroupCategory::all();
-
-        $mentors = DB::table('clients')
-                ->select('clients.name','clients.telephone','roles.name as role_name','roles.description','clients.id')
-                ->join('role_clients','role_clients.client_id','=','clients.id')
-                ->join('kindergarten_clients','kindergarten_clients.client_id','=','clients.id')
-                ->join('roles','roles.id','=','role_clients.role_id')
-                ->where('kindergarten_clients.kindergarten_id',$kindergarten->id)
-                ->where('role_clients.role_id',Config::get('constants.roles.mentor'))
-                ->get();
-
-        //выборка воспитателей стала ограниченной таким образом что воспитатели не могут быть одновременно быть в двух разных группах.
-
-        $existInFirstMentors = DB::table('clients')
-            ->select('clients.id')
-            ->join('role_clients','role_clients.client_id','=','clients.id')
-            ->join('kindergarten_clients','kindergarten_clients.client_id','=','clients.id')
-            ->join('groups','groups.first_mentor_id','=','clients.id')
-            ->where('kindergarten_clients.kindergarten_id',$kindergarten->id)
-            ->where('role_clients.role_id',Config::get('constants.roles.mentor'))
-            ->distinct()
-            ->pluck('clients.id')
-            ->toArray();
-
-        $existInSecondMentors = DB::table('clients')
-            ->select('clients.id')
-            ->join('role_clients','role_clients.client_id','=','clients.id')
-            ->join('kindergarten_clients','kindergarten_clients.client_id','=','clients.id')
-            ->join('groups','groups.second_mentor_id','=','clients.id')
-            ->where('kindergarten_clients.kindergarten_id',$kindergarten->id)
-            ->where('role_clients.role_id',Config::get('constants.roles.mentor'))
-            ->distinct()
-            ->pluck('clients.id')
-            ->toArray();
-
-        $notExistInFirstMentors = DB::table('clients')
-                ->select('clients.name','clients.telephone','roles.name as role_name','roles.description','clients.id')
-                ->join('role_clients','role_clients.client_id','=','clients.id')
-                ->join('kindergarten_clients','kindergarten_clients.client_id','=','clients.id')
-                ->join('roles','roles.id','=','role_clients.role_id')
-                ->where('kindergarten_clients.kindergarten_id',$kindergarten->id)
-                ->where('role_clients.role_id',Config::get('constants.roles.mentor'))
-                ->whereNotIn('clients.id',$existInFirstMentors)
-                ->get();
-
-        $notExistInSecondMentors = DB::table('clients')
-                ->select('clients.name','clients.telephone','roles.name as role_name','roles.description','clients.id')
-                ->join('role_clients','role_clients.client_id','=','clients.id')
-                ->join('kindergarten_clients','kindergarten_clients.client_id','=','clients.id')
-                ->join('roles','roles.id','=','role_clients.role_id')
-                ->where('kindergarten_clients.kindergarten_id',$kindergarten->id)
-                ->where('role_clients.role_id',Config::get('constants.roles.mentor'))
-                ->whereNotIn('clients.id',$existInSecondMentors)
-                ->get();
-        	
-        // dd($notExistInSecondMentors);
-
-        //Создаем группу
-        if(!empty($request->input('group_name')) ) {
-
-            $group = new Group();
-            $group->title = $request->input('group_name');
-            $group->category = $request->get('group_category');
-            $group->child_count = $request->get('child_count');
-            $group->kindergarten_id = $kindergarten->id;
-            $group->first_mentor_id = $request->get('first_mentor');
-            $group->second_mentor_id = $request->get('second_mentor');
-
-            $group->save();
-
-            \Session::flash('message', 'Successfully created group!');
-
-            if($request->has('add-group-submit')){
-                return \Redirect('user/groups');
+                \Session::flash('warning', trans('messages.you_must_edit_general_info').' '.$converse_result.' '.trans('messages.group'));
             }
+
+            $group_categories = GroupCategory::all();
+
+            $mentors = DB::table('clients')
+                    ->select('clients.name','clients.telephone','roles.name as role_name','roles.description','clients.id')
+                    ->join('role_clients','role_clients.client_id','=','clients.id')
+                    ->join('kindergarten_clients','kindergarten_clients.client_id','=','clients.id')
+                    ->join('roles','roles.id','=','role_clients.role_id')
+                    ->where('kindergarten_clients.kindergarten_id',$kindergarten->id)
+                    ->where('role_clients.role_id',Config::get('constants.roles.mentor'))
+                    ->get();
+
+            //выборка воспитателей стала ограниченной таким образом что воспитатели не могут быть одновременно быть в двух разных группах.
+
+            $existInFirstMentors = DB::table('clients')
+                ->select('clients.id')
+                ->join('role_clients','role_clients.client_id','=','clients.id')
+                ->join('kindergarten_clients','kindergarten_clients.client_id','=','clients.id')
+                ->join('groups','groups.first_mentor_id','=','clients.id')
+                ->where('kindergarten_clients.kindergarten_id',$kindergarten->id)
+                ->where('role_clients.role_id',Config::get('constants.roles.mentor'))
+                ->distinct()
+                ->pluck('clients.id')
+                ->toArray();
+
+            $existInSecondMentors = DB::table('clients')
+                ->select('clients.id')
+                ->join('role_clients','role_clients.client_id','=','clients.id')
+                ->join('kindergarten_clients','kindergarten_clients.client_id','=','clients.id')
+                ->join('groups','groups.second_mentor_id','=','clients.id')
+                ->where('kindergarten_clients.kindergarten_id',$kindergarten->id)
+                ->where('role_clients.role_id',Config::get('constants.roles.mentor'))
+                ->distinct()
+                ->pluck('clients.id')
+                ->toArray();
+
+            $notExistInFirstMentors = DB::table('clients')
+                    ->select('clients.name','clients.telephone','roles.name as role_name','roles.description','clients.id')
+                    ->join('role_clients','role_clients.client_id','=','clients.id')
+                    ->join('kindergarten_clients','kindergarten_clients.client_id','=','clients.id')
+                    ->join('roles','roles.id','=','role_clients.role_id')
+                    ->where('kindergarten_clients.kindergarten_id',$kindergarten->id)
+                    ->where('role_clients.role_id',Config::get('constants.roles.mentor'))
+                    ->whereNotIn('clients.id',$existInFirstMentors)
+                    ->get();
+
+            $notExistInSecondMentors = DB::table('clients')
+                    ->select('clients.name','clients.telephone','roles.name as role_name','roles.description','clients.id')
+                    ->join('role_clients','role_clients.client_id','=','clients.id')
+                    ->join('kindergarten_clients','kindergarten_clients.client_id','=','clients.id')
+                    ->join('roles','roles.id','=','role_clients.role_id')
+                    ->where('kindergarten_clients.kindergarten_id',$kindergarten->id)
+                    ->where('role_clients.role_id',Config::get('constants.roles.mentor'))
+                    ->whereNotIn('clients.id',$existInSecondMentors)
+                    ->get();
+                
+            // dd($notExistInSecondMentors);
+
+            //Создаем группу
+            if(!empty($request->input('group_name')) ) {
+
+                $group = new Group();
+                $group->title = $request->input('group_name');
+                $group->category = $request->get('group_category');
+                $group->child_count = $request->get('child_count');
+                $group->kindergarten_id = $kindergarten->id;
+                $group->first_mentor_id = $request->get('first_mentor');
+                $group->second_mentor_id = $request->get('second_mentor');
+
+                $group->save();
+
+                \Session::flash('message', trans('messages.successfully_created_group'));
+
+                if($request->has('add-group-submit')){
+                    return \Redirect('user/groups');
+                }
+            }
+
+            return view('client.groups',compact('groups','group_categories','mentors','rows','kindergarten','notExistInFirstMentors','notExistInSecondMentors'));
+        }else{
+
+            \Session::flash('oops', trans('messages.you_dont_have_perm_for_open_group'));
+            return \Redirect('user/home');
         }
 
-        return view('client.groups',compact('groups','group_categories','mentors','rows','kindergarten','notExistInFirstMentors','notExistInSecondMentors'));
+
     }
 
     public function editGroup($id){
@@ -230,11 +241,11 @@ class ClientController extends Controller
             $group->save();
 
         }catch(QueryException $e){
-            \Session::flash('oops', 'Sorry something went wrong. Please fill fields!');
+            \Session::flash('oops', trans('messages.please_fill_fields'));
             return \Redirect('user/groups/'.$group->id);
         }
 
-        \Session::flash('message', 'Successfully updated!');
+        \Session::flash('message', trans('messages.successfully_updated'));
 
         return \Redirect('user/groups');
     }
@@ -250,50 +261,60 @@ class ClientController extends Controller
             ->where('kindergarten_clients.client_id',\Auth::user()->id)
             ->first();
 
-        $groups = Group::where('first_mentor_id',\Auth::user()->id)
-        			->orWhere('second_mentor_id',\Auth::user()->id)
-        			->get();
-        // dd($groups);
+        $right_settings = Setting::where('kindergarten_id',$kindergarten->id)->first();
 
-        //Вывод для каждой группы флэш сообщения о необходимом количестве детей
-        $getGroup = Group::where('id',$request->input('group_id'))->first();
+        //check setting permissions
+        if($right_settings->is_user_module == 1){
 
-        if($request->has('child-submit')){
-            
-            $parent = new Client();
-            //Скрыто в связи с неактуальностью
-            // $parent->name = mb_convert_case($request->input('parent_name'),MB_CASE_TITLE,"UTF-8");
+            $groups = Group::where('first_mentor_id',\Auth::user()->id)
+                    ->orWhere('second_mentor_id',\Auth::user()->id)
+                    ->get();
+            // dd($groups);
 
-            if(strlen($request->input('parent_telephone')) == Config::get('constants.length.telephone')){
-                $parent->telephone = $request->input('parent_telephone');
-            }else {
-                \Session::flash('oops', 'Sorry something went wrong. Please fill number correctly!');
-                return \Redirect('user/childrens');
+            //Вывод для каждой группы флэш сообщения о необходимом количестве детей
+            $getGroup = Group::where('id',$request->input('group_id'))->first();
+
+            if($request->has('child-submit')){
+                
+                $parent = new Client();
+                //Скрыто в связи с неактуальностью
+                // $parent->name = mb_convert_case($request->input('parent_name'),MB_CASE_TITLE,"UTF-8");
+
+                if(strlen($request->input('parent_telephone')) == Config::get('constants.length.telephone')){
+                    $parent->telephone = $request->input('parent_telephone');
+                }else {
+                     \Session::flash('oops', trans('messages.please_fill_number_correctly'));
+                    return \Redirect('user/childrens');
+                }
+
+                // $parent->telephone = $request->input('parent_telephone');
+                $parent->role_name = 'Родитель';
+                $parent->save();
+                $parent->role()->attach(Config::get('constants.roles.parent'));
+
+                $children = new Children();
+                $children->name = mb_convert_case($request->input('children_name'),MB_CASE_TITLE,"UTF-8");
+                $children->is_contract = $request->input('is_contract');
+                //Скрыто в связи с неактуальностью
+                // $children->iin = $request->input('children_iin');
+                $children->group()->associate($getGroup->id);
+
+                $getParent = Client::where('telephone',$request->input('parent_telephone'))->first();
+                $children->parent()->associate($getParent->id);
+                
+                $children->save();
+
+                \Session::flash('message', trans('messages.child_successfully_created'));
             }
-
-            // $parent->telephone = $request->input('parent_telephone');
-            $parent->role_name = 'Родитель';
-            $parent->save();
-            $parent->role()->attach(Config::get('constants.roles.parent'));
-
-            $children = new Children();
-            $children->name = mb_convert_case($request->input('children_name'),MB_CASE_TITLE,"UTF-8");
-            $children->is_contract = $request->input('is_contract');
-            //Скрыто в связи с неактуальностью
-            // $children->iin = $request->input('children_iin');
-            $children->group()->associate($getGroup->id);
-
-            $getParent = Client::where('telephone',$request->input('parent_telephone'))->first();
-            $children->parent()->associate($getParent->id);
             
-            $children->save();
+            // dd($groups);
 
-            \Session::flash('message', 'Child successfully created!');
+            return view('client.childrens',compact('groups'));
+        }else {
+
+            \Session::flash('oops', trans('messages.you_dont_have_perm_for_open_user'));
+            return \Redirect('user/home');
         }
-        
-        // dd($groups);
-
-        return view('client.childrens',compact('groups'));
     }
 
 /*
@@ -324,7 +345,7 @@ class ClientController extends Controller
             if($children->name !== ''){
                 $children->save();
             }else {
-                \Session::flash('oops', 'Sorry something went wrong. Please fill fields!');
+                 \Session::flash('oops', trans('messages.please_fill_fields'));
                 return \Redirect('user/childrens/'.$children->id);
             }
             
@@ -338,14 +359,14 @@ class ClientController extends Controller
                 if(strlen($request->input('parent_telephone'.$parent->id)) == Config::get('constants.length.telephone')){
                     $parent->telephone = $request->input('parent_telephone'.$parent->id);
                 }else {
-                    \Session::flash('oops', 'Sorry something went wrong. Please fill number correctly!');
+                     \Session::flash('oops', trans('messages.please_fill_number_correctly'));
                     return \Redirect('user/childrens/'.$children->id);
                 }
                 
                 if($parent->name !== ''){
                     $parent->save();   
                 }else {
-                    \Session::flash('oops', 'Sorry something went wrong. Please fill fields!');
+                     \Session::flash('oops', trans('messages.please_fill_fields'));
                     return \Redirect('user/childrens/'.$children->id);
                 }
             }
@@ -354,12 +375,12 @@ class ClientController extends Controller
             // ]);
 
         }catch(QueryException $e){
-            \Session::flash('oops', 'Sorry something went wrong. Please fill fields!');
+             \Session::flash('oops', trans('messages.please_fill_fields'));
             return \Redirect('user/childrens/'.$children->id);
         }
         
 
-        \Session::flash('message', 'Successfully updated!');
+        \Session::flash('message', trans('messages.successfully_updated'));
 
         return \Redirect('user/childrens');
     }

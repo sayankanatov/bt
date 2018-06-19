@@ -2,11 +2,6 @@
 
 @section('content')
 <div class="col-md-12">
-@if (\Session::has('message'))
-	<div class="alert alert-success">
-	    <p>{{ \Session::get('message') }}</p>
-	</div><br />
-@endif
     <!-- Native navbar START -->
 @if (Route::has('login'))
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -42,6 +37,17 @@
     </div>
 </nav>
 @endif
+@if (\Session::has('message'))
+    <div class="alert alert-success">
+        <p>{{ \Session::get('message') }}</p>
+    </div><br />
+@endif
+
+@if (\Session::has('oops'))
+    <div class="alert alert-success">
+        <p>{{ \Session::get('oops') }}</p>
+    </div><br />
+@endif
     <!-- Native navbar END -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -51,10 +57,25 @@
                 <a class="btn btn-primary btn-lg" href="{{url(App\Http\Middleware\LocaleMiddleware::getLocale().$general_info_link)}}">@lang('messages.general_info')</a>
             </li>
             <li class="nav-item">
-                <a class="btn btn-secondary btn-lg" style="margin-left: 7%;" href="{{url(App\Http\Middleware\LocaleMiddleware::getLocale().$roles_link)}}">@lang('messages.roles')</a>
+                <a class="btn btn-secondary btn-lg" href="{{url(App\Http\Middleware\LocaleMiddleware::getLocale().$roles_link)}}">@lang('messages.roles')</a>
             </li>
+            @isset($right_settings)
+                @if($right_settings->is_group_module == 0)
+                    <li class="nav-item">
+                        <a class="btn btn-success btn-lg" href="{{url(App\Http\Middleware\LocaleMiddleware::getLocale().$groups_link)}}">@lang('messages.groups')</a>
+                    </li>
+                @endif
+            @endisset
+
+            @isset($right_settings)
+                @if($right_settings->is_user_module == 0)
+                    <li class="nav-item">
+                        <a class="btn btn-warning btn-lg" href="{{url(App\Http\Middleware\LocaleMiddleware::getLocale().$user_base_link)}}">@lang('messages.users')</a>
+                    </li>
+                @endif
+            @endisset
             <li class="nav-item">
-                <a class="btn btn-warning btn-lg" style="margin-left: 15%;" href="{{url(App\Http\Middleware\LocaleMiddleware::getLocale().$user_base_link)}}">@lang('messages.users')</a>
+                <a class="btn btn-danger btn-lg" href="{{url(App\Http\Middleware\LocaleMiddleware::getLocale().$settings_link)}}">@lang('messages.settings')</a>
             </li>
         </ul>
     </div>

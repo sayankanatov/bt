@@ -5,7 +5,7 @@ return [
 		'admin' => 1,
 		'koordinator' => 2,
 		'manager' => 3,
-		'deputy' => 4,
+		// 'deputy' => 4,
 		'methodist' => 5,
 		'nurse' => 6,
 		'accountant' => 7,

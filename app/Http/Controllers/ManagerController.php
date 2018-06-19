@@ -17,6 +17,7 @@ use App\Models\Client;
 use App\Models\GroupCategory;
 use App\Models\Group;
 use App\Models\Children;
+use App\Models\Setting;
 use DB;
 use Config;
 
@@ -34,15 +35,27 @@ class ManagerController extends Controller
      */
     public function index()
     {
+        $kindergarten = DB::table('kindergartens')->select('kindergartens.id','kindergartens.group_count')
+            ->join('kindergarten_users','kindergarten_users.kindergarten_id','=','kindergartens.id')
+            ->where('kindergarten_users.user_id',\Auth::user()->id)
+            ->first();
+
+        $right_settings = Setting::where('kindergarten_id',$kindergarten->id)->first();
+
         // Ссылки на меню менеджера
         $general_info_link = '/manager/general';
         $roles_link = '/manager/roles';
+        $groups_link = '/manager/groups';
         $user_base_link = '/manager/childrens';
+        $settings_link = '/manager/settings';
 
         return view('manager.index',compact(
             'general_info_link',
             'roles_link',
-            'user_base_link'
+            'groups_link',
+            'user_base_link',
+            'settings_link',
+            'right_settings'
         ));
     }
 
@@ -119,7 +132,7 @@ class ManagerController extends Controller
         if(strlen($request->input('telephone')) == Config::get('constants.length.telephone')){
             $kinder_info->telephone = $request->input('telephone');
         }else {
-            \Session::flash('oops', 'Sorry something went wrong. Please fill number correctly!');
+             \Session::flash('oops', trans('messages.please_fill_number_correctly'));
             return \Redirect('manager/general');
         }
         
@@ -131,7 +144,7 @@ class ManagerController extends Controller
         $kinder_info->project_capacity = $request->input('project_capacity');
         $kinder_info->save();
 
-        \Session::flash('message', 'Successfully updated general information!');
+        \Session::flash('message', trans('messages.successfully_updated_general'));
 
         return \Redirect('manager/general');
     }
@@ -142,15 +155,7 @@ class ManagerController extends Controller
                         ->join('kindergarten_users','kindergarten_users.kindergarten_id','=','kindergartens.id')
                         ->where('kindergarten_users.user_id',\Auth::user()->id)
                         ->first();
-        //Получаем заведующего
-        $deputy = DB::table('clients')
-                    ->select('clients.name','clients.telephone','clients.role_name','roles.description')
-                    ->join('role_clients','role_clients.client_id','=','clients.id')
-                    ->join('kindergarten_clients','kindergarten_clients.client_id','=','clients.id')
-                    ->join('roles','roles.id','=','role_clients.role_id')
-                    ->where('kindergarten_clients.kindergarten_id',$kindergarten->id)
-                    ->where('role_clients.role_id',Config::get('constants.roles.deputy'))
-                    ->first();
+
         //Получаем методиста
         $methodist = DB::table('clients')
                     ->select('clients.name','clients.telephone','clients.role_name','roles.description')
@@ -207,7 +212,7 @@ class ManagerController extends Controller
                 ->get();
         // dd($mentors);
 
-        return view('manager.roles',compact('deputy','methodist','nurse','accountant','storekeeper','mentors'));
+        return view('manager.roles',compact('methodist','nurse','accountant','storekeeper','mentors'));
     }
 
     public function storeRoles(Request $request){
@@ -216,14 +221,7 @@ class ManagerController extends Controller
                         ->join('kindergarten_users','kindergarten_users.kindergarten_id','=','kindergartens.id')
                         ->where('kindergarten_users.user_id',\Auth::user()->id)
                         ->first();
-        //Получаем заведующего
-        $deputy = DB::table('clients')
-                    ->select('*')
-                    ->join('role_clients','role_clients.client_id','=','clients.id')
-                    ->join('kindergarten_clients','kindergarten_clients.client_id','=','clients.id')
-                    ->where('kindergarten_clients.kindergarten_id',$kindergarten->id)
-                    ->where('role_clients.role_id',Config::get('constants.roles.deputy'))
-                    ->first();
+        
         //Получаем методиста
         $methodist = DB::table('clients')
                     ->select('*')
@@ -265,40 +263,8 @@ class ManagerController extends Controller
                 ->where('kindergarten_clients.kindergarten_id',$kindergarten->id)
                 ->where('role_clients.role_id',Config::get('constants.roles.mentor'))
                 ->get();
-        //Если есть request и нет заведущего то создаем его, иначе редактируем существующего
+        //Если есть request и нет методиста то создаем его, иначе редактируем существующего
         // По аналогии создаем или редактируем остальных участников
-        if($request->input('tel1') && !$deputy){
-            $client = new Client();
-            
-            if(strlen($request->input('tel1')) == Config::get('constants.length.telephone')){
-                $client->telephone = $request->input('tel1');
-            }else {
-               \Session::flash('oops', 'Sorry something went wrong. Please fill number correctly!');
-                return \Redirect('manager/roles');
-            }
-
-            $client->name = mb_convert_case($request->input('fio1'),MB_CASE_TITLE,"UTF-8");
-            $client->role_name = mb_convert_case($request->input('role_name1'),MB_CASE_TITLE,"UTF-8");
-            $client->save();
-            //Устанавливаем связь с садиком
-            $client->kindergarten()->attach($kindergarten->id);
-            //Устанавливаем роль Заведующий
-            $client->role()->attach(Config::get('constants.roles.deputy'));
-
-        }elseif(isset($deputy) && $request->input('tel1')) {
-            $client = Client::where('id',$deputy->client_id)->first();
-
-            if(strlen($request->input('tel1')) == Config::get('constants.length.telephone')){
-                $client->telephone = $request->input('tel1');
-            }else {
-               \Session::flash('oops', 'Sorry something went wrong. Please fill number correctly!');
-                return \Redirect('manager/roles');
-            }
-
-            $client->name = mb_convert_case($request->input('fio1'),MB_CASE_TITLE,"UTF-8");
-            $client->role_name = mb_convert_case($request->input('role_name1'),MB_CASE_TITLE,"UTF-8");
-            $client->save();
-        }
 
         if($request->input('tel2') && !$methodist){
             $client = new Client();
@@ -306,7 +272,7 @@ class ManagerController extends Controller
             if(strlen($request->input('tel2')) == Config::get('constants.length.telephone')){
                 $client->telephone = $request->input('tel2');
             }else {
-               \Session::flash('oops', 'Sorry something went wrong. Please fill number correctly!');
+                \Session::flash('oops', trans('messages.please_fill_number_correctly'));
                 return \Redirect('manager/roles');
             }
 
@@ -324,7 +290,7 @@ class ManagerController extends Controller
             if(strlen($request->input('tel2')) == Config::get('constants.length.telephone')){
                 $client->telephone = $request->input('tel2');
             }else {
-               \Session::flash('oops', 'Sorry something went wrong. Please fill number correctly!');
+                \Session::flash('oops', trans('messages.please_fill_number_correctly'));
                 return \Redirect('manager/roles');
             }
 
@@ -339,7 +305,7 @@ class ManagerController extends Controller
             if(strlen($request->input('tel3')) == Config::get('constants.length.telephone')){
                 $client->telephone = $request->input('tel3');
             }else {
-               \Session::flash('oops', 'Sorry something went wrong. Please fill number correctly!');
+                \Session::flash('oops', trans('messages.please_fill_number_correctly'));
                 return \Redirect('manager/roles');
             }
 
@@ -357,7 +323,7 @@ class ManagerController extends Controller
             if(strlen($request->input('tel3')) == Config::get('constants.length.telephone')){
                 $client->telephone = $request->input('tel3');
             }else {
-               \Session::flash('oops', 'Sorry something went wrong. Please fill number correctly!');
+                \Session::flash('oops', trans('messages.please_fill_number_correctly'));
                 return \Redirect('manager/roles');
             }
             
@@ -372,7 +338,7 @@ class ManagerController extends Controller
             if(strlen($request->input('tel4')) == Config::get('constants.length.telephone')){
                 $client->telephone = $request->input('tel4');
             }else {
-               \Session::flash('oops', 'Sorry something went wrong. Please fill number correctly!');
+                \Session::flash('oops', trans('messages.please_fill_number_correctly'));
                 return \Redirect('manager/roles');
             }
 
@@ -390,7 +356,7 @@ class ManagerController extends Controller
             if(strlen($request->input('tel4')) == Config::get('constants.length.telephone')){
                 $client->telephone = $request->input('tel4');
             }else {
-               \Session::flash('oops', 'Sorry something went wrong. Please fill number correctly!');
+                \Session::flash('oops', trans('messages.please_fill_number_correctly'));
                 return \Redirect('manager/roles');
             }
 
@@ -406,7 +372,7 @@ class ManagerController extends Controller
             if(strlen($request->input('tel5')) == Config::get('constants.length.telephone')){
                 $client->telephone = $request->input('tel5');
             }else {
-               \Session::flash('oops', 'Sorry something went wrong. Please fill number correctly!');
+                \Session::flash('oops', trans('messages.please_fill_number_correctly'));
                 return \Redirect('manager/roles');
             }
 
@@ -424,7 +390,7 @@ class ManagerController extends Controller
             if(strlen($request->input('tel5')) == Config::get('constants.length.telephone')){
                 $client->telephone = $request->input('tel5');
             }else {
-               \Session::flash('oops', 'Sorry something went wrong. Please fill number correctly!');
+                \Session::flash('oops', trans('messages.please_fill_number_correctly'));
                 return \Redirect('manager/roles');
             }
 
@@ -440,7 +406,7 @@ class ManagerController extends Controller
             if(strlen($request->input('tel6')) == Config::get('constants.length.telephone')){
                 $client->telephone = $request->input('tel6');
             }else {
-               \Session::flash('oops', 'Sorry something went wrong. Please fill number correctly!');
+                \Session::flash('oops', trans('messages.please_fill_number_correctly'));
                 return \Redirect('manager/roles');
             }
 
@@ -460,7 +426,7 @@ class ManagerController extends Controller
             if(strlen($request->input('mentor_tel')) == Config::get('constants.length.telephone')){
                 $mentor->telephone = $request->input('mentor_tel');
             }else {
-               \Session::flash('oops', 'Sorry something went wrong. Please fill number correctly!');
+                \Session::flash('oops', trans('messages.please_fill_number_correctly'));
                 return \Redirect('manager/roles');
             }
 
@@ -477,7 +443,7 @@ class ManagerController extends Controller
                 if(strlen($request->input('mentortel_'.$mentor->id)) == Config::get('constants.length.telephone')){
                     $exist_mentor->telephone = $request->input('mentortel_'.$mentor->id);
                 }else {
-                \Session::flash('oops', 'Sorry something went wrong. Please fill number correctly!');
+                 \Session::flash('oops', trans('messages.please_fill_number_correctly'));
                 return \Redirect('manager/roles');
                 }
                 
@@ -486,9 +452,213 @@ class ManagerController extends Controller
             }
         }
 
-        \Session::flash('message', 'Successfully updated roles!');
+        \Session::flash('message', trans('messages.successfully_updated_roles'));
 
         return \Redirect('manager/roles'); 
+    }
+
+
+    public function groups(Request $request)
+    {
+
+        //get kindergarten
+        $kindergarten = DB::table('kindergartens')
+            ->select('kindergartens.id','kindergartens.group_count')
+            ->join('kindergarten_users','kindergarten_users.kindergarten_id','=','kindergartens.id')
+            ->where('kindergarten_users.user_id',\Auth::user()->id)
+            ->first();
+
+        $right_settings = Setting::where('kindergarten_id',$kindergarten->id)->first();
+
+        //check setting permissions
+        if($right_settings->is_group_module == 0){
+            //get all groups
+            $groups = DB::table('groups')->select('*')
+                        ->where('groups.kindergarten_id',$kindergarten->id)
+                        ->get();
+            // dd($groups);
+
+            //get flash message in view
+            $result = $kindergarten->group_count - $groups->count();
+            $converse_result = $groups->count() - $kindergarten->group_count;
+
+            if($result > 0){
+
+                \Session::flash('warning', trans('messages.you_must_add').' '.$result.' '.trans('messages.group'));
+
+            }elseif($converse_result > 0){
+
+                \Session::flash('warning', trans('messages.you_must_edit_general_info').' '.$converse_result.' '.trans('messages.group'));
+            }
+
+            $group_categories = GroupCategory::all();
+
+            $mentors = DB::table('clients')
+                    ->select('clients.name','clients.telephone','roles.name as role_name','roles.description','clients.id')
+                    ->join('role_clients','role_clients.client_id','=','clients.id')
+                    ->join('kindergarten_clients','kindergarten_clients.client_id','=','clients.id')
+                    ->join('roles','roles.id','=','role_clients.role_id')
+                    ->where('kindergarten_clients.kindergarten_id',$kindergarten->id)
+                    ->where('role_clients.role_id',Config::get('constants.roles.mentor'))
+                    ->get();
+
+            //выборка воспитателей стала ограниченной таким образом что воспитатели не могут быть одновременно быть в двух разных группах.
+
+            $existInFirstMentors = DB::table('clients')
+                ->select('clients.id')
+                ->join('role_clients','role_clients.client_id','=','clients.id')
+                ->join('kindergarten_clients','kindergarten_clients.client_id','=','clients.id')
+                ->join('groups','groups.first_mentor_id','=','clients.id')
+                ->where('kindergarten_clients.kindergarten_id',$kindergarten->id)
+                ->where('role_clients.role_id',Config::get('constants.roles.mentor'))
+                ->distinct()
+                ->pluck('clients.id')
+                ->toArray();
+
+            $existInSecondMentors = DB::table('clients')
+                ->select('clients.id')
+                ->join('role_clients','role_clients.client_id','=','clients.id')
+                ->join('kindergarten_clients','kindergarten_clients.client_id','=','clients.id')
+                ->join('groups','groups.second_mentor_id','=','clients.id')
+                ->where('kindergarten_clients.kindergarten_id',$kindergarten->id)
+                ->where('role_clients.role_id',Config::get('constants.roles.mentor'))
+                ->distinct()
+                ->pluck('clients.id')
+                ->toArray();
+
+            $notExistInFirstMentors = DB::table('clients')
+                    ->select('clients.name','clients.telephone','roles.name as role_name','roles.description','clients.id')
+                    ->join('role_clients','role_clients.client_id','=','clients.id')
+                    ->join('kindergarten_clients','kindergarten_clients.client_id','=','clients.id')
+                    ->join('roles','roles.id','=','role_clients.role_id')
+                    ->where('kindergarten_clients.kindergarten_id',$kindergarten->id)
+                    ->where('role_clients.role_id',Config::get('constants.roles.mentor'))
+                    ->whereNotIn('clients.id',$existInFirstMentors)
+                    ->get();
+
+            $notExistInSecondMentors = DB::table('clients')
+                    ->select('clients.name','clients.telephone','roles.name as role_name','roles.description','clients.id')
+                    ->join('role_clients','role_clients.client_id','=','clients.id')
+                    ->join('kindergarten_clients','kindergarten_clients.client_id','=','clients.id')
+                    ->join('roles','roles.id','=','role_clients.role_id')
+                    ->where('kindergarten_clients.kindergarten_id',$kindergarten->id)
+                    ->where('role_clients.role_id',Config::get('constants.roles.mentor'))
+                    ->whereNotIn('clients.id',$existInSecondMentors)
+                    ->get();
+                
+            // dd($notExistInSecondMentors);
+
+            //Создаем группу
+            if(!empty($request->input('group_name')) ) {
+
+                $group = new Group();
+                $group->title = $request->input('group_name');
+                $group->category = $request->get('group_category');
+                $group->child_count = $request->get('child_count');
+                $group->kindergarten_id = $kindergarten->id;
+                $group->first_mentor_id = $request->get('first_mentor');
+                $group->second_mentor_id = $request->get('second_mentor');
+
+                $group->save();
+
+                \Session::flash('message', trans('messages.successfully_created_group'));
+
+                if($request->has('add-group-submit')){
+                    return \Redirect('manager/groups');
+                }
+            }
+
+            return view('manager.groups',compact('groups','group_categories','mentors','rows','kindergarten','notExistInFirstMentors','notExistInSecondMentors'));
+
+        }else {
+            \Session::flash('oops', trans('messages.you_dont_have_perm_for_open_group'));
+            return \Redirect('manager');
+        }
+    }
+
+    public function editGroup($id){
+
+        //get group for edit
+        $group = Group::find($id);
+
+        $mentors = DB::table('clients')
+                ->select('clients.name','clients.telephone','roles.name as role_name','roles.description','clients.id')
+                ->join('role_clients','role_clients.client_id','=','clients.id')
+                ->join('kindergarten_clients','kindergarten_clients.client_id','=','clients.id')
+                ->join('roles','roles.id','=','role_clients.role_id')
+                ->where('kindergarten_clients.kindergarten_id',$group->kindergarten_id)
+                ->where('role_clients.role_id',Config::get('constants.roles.mentor'))
+                ->get();
+
+        $existInFirstMentors = DB::table('clients')
+            ->select('clients.id','clients.name')
+            ->join('role_clients','role_clients.client_id','=','clients.id')
+            ->join('kindergarten_clients','kindergarten_clients.client_id','=','clients.id')
+            ->join('groups','groups.first_mentor_id','=','clients.id')
+            ->where('kindergarten_clients.kindergarten_id',$group->kindergarten_id)
+            ->where('role_clients.role_id',Config::get('constants.roles.mentor'))
+            ->distinct()
+            ->pluck('clients.id')
+            ->toArray();
+
+        $existInSecondMentors = DB::table('clients')
+            ->select('clients.id')
+            ->join('role_clients','role_clients.client_id','=','clients.id')
+            ->join('kindergarten_clients','kindergarten_clients.client_id','=','clients.id')
+            ->join('groups','groups.second_mentor_id','=','clients.id')
+            ->where('kindergarten_clients.kindergarten_id',$group->kindergarten_id)
+            ->where('role_clients.role_id',Config::get('constants.roles.mentor'))
+            ->distinct()
+            ->pluck('clients.id')
+            ->toArray();
+
+        $notExistInFirstMentors = DB::table('clients')
+                ->select('clients.name','clients.telephone','roles.name as role_name','roles.description','clients.id')
+                ->join('role_clients','role_clients.client_id','=','clients.id')
+                ->join('kindergarten_clients','kindergarten_clients.client_id','=','clients.id')
+                ->join('roles','roles.id','=','role_clients.role_id')
+                ->where('kindergarten_clients.kindergarten_id',$group->kindergarten_id)
+                ->where('role_clients.role_id',Config::get('constants.roles.mentor'))
+                ->whereNotIn('clients.id',$existInFirstMentors)
+                ->get();
+
+        $notExistInSecondMentors = DB::table('clients')
+                ->select('clients.name','clients.telephone','roles.name as role_name','roles.description','clients.id')
+                ->join('role_clients','role_clients.client_id','=','clients.id')
+                ->join('kindergarten_clients','kindergarten_clients.client_id','=','clients.id')
+                ->join('roles','roles.id','=','role_clients.role_id')
+                ->where('kindergarten_clients.kindergarten_id',$group->kindergarten_id)
+                ->where('role_clients.role_id',Config::get('constants.roles.mentor'))
+                ->whereNotIn('clients.id',$existInSecondMentors)
+                ->get();
+
+        $group_categories = GroupCategory::all();
+        $child_counts = array(0 => 10, 1 => 15, 2 => 20, 3 => 25, 4 => 30, 5 => 35, 6 => 40, 7 => 45, 8 => 50);
+
+        return view('manager.edit-group',compact('group','group_categories','child_counts','notExistInFirstMentors','notExistInSecondMentors','mentors'));
+    }
+
+    public function updateGroup(Request $request, $id){
+
+        // get the group for update
+        try{
+            $group = Group::find($id);
+            $group->title = $request->input('group_name');
+            $group->category = $request->get('group_category');
+            $group->child_count = $request->get('child_count');
+            $group->first_mentor_id = $request->get('first_mentor');
+            $group->second_mentor_id = $request->get('second_mentor');
+
+            $group->save();
+
+        }catch(QueryException $e){
+             \Session::flash('oops', trans('messages.please_fill_fields'));
+            return \Redirect('manager/groups/'.$group->id);
+        }
+
+        \Session::flash('message', trans('messages.successfully_updated'));
+
+        return \Redirect('manager/groups');
     }
 
 /**
@@ -501,49 +671,59 @@ class ManagerController extends Controller
                         ->where('kindergarten_users.user_id',\Auth::user()->id)
                         ->first();
 
-        $groups = Group::where('kindergarten_id',$kindergarten->id)->get();
+        $right_settings = Setting::where('kindergarten_id',$kindergarten->id)->first();
 
-        //Вывод для каждой группы флэш сообщения о необходимом количестве детей
-        
-        // dd($groups);
-        $getGroup = Group::where('id',$request->input('group_id'))->first();
+        //check setting permissions
+        if($right_settings->is_user_module == 0){
 
-        if($request->has('child-submit')){
+            $groups = Group::where('kindergarten_id',$kindergarten->id)->get();
+
+            //Вывод для каждой группы флэш сообщения о необходимом количестве детей
             
-            $parent = new Client();
-            //Скрыто в связи с неактуальностью
-            // $parent->name = mb_convert_case($request->input('parent_name'),MB_CASE_TITLE,"UTF-8");
+            // dd($groups);
+            $getGroup = Group::where('id',$request->input('group_id'))->first();
 
-            if(strlen($request->input('parent_telephone')) == Config::get('constants.length.telephone')){
-                $parent->telephone = $request->input('parent_telephone');
-            }else {
-                \Session::flash('oops', 'Sorry something went wrong. Please fill number correctly!');
-                return \Redirect('manager/childrens');
+            if($request->has('child-submit')){
+                
+                $parent = new Client();
+                //Скрыто в связи с неактуальностью
+                // $parent->name = mb_convert_case($request->input('parent_name'),MB_CASE_TITLE,"UTF-8");
+
+                if(strlen($request->input('parent_telephone')) == Config::get('constants.length.telephone')){
+                    $parent->telephone = $request->input('parent_telephone');
+                }else {
+                     \Session::flash('oops', trans('messages.please_fill_number_correctly'));
+                    return \Redirect('manager/childrens');
+                }
+
+                // $parent->telephone = $request->input('parent_telephone');
+                $parent->role_name = 'Родитель';
+                $parent->save();
+                $parent->role()->attach(Config::get('constants.roles.parent'));
+
+                $children = new Children();
+                $children->name = mb_convert_case($request->input('children_name'),MB_CASE_TITLE,"UTF-8");
+                $children->is_contract = $request->input('is_contract');
+                //Скрыто в связи с неактуальностью
+                // $children->iin = $request->input('children_iin');
+                $children->group()->associate($getGroup->id);
+
+                $getParent = Client::where('telephone',$request->input('parent_telephone'))->first();
+                $children->parent()->associate($getParent->id);
+                
+                $children->save();
+
+                \Session::flash('message', trans('messages.child_successfully_created'));
             }
-
-            // $parent->telephone = $request->input('parent_telephone');
-            $parent->role_name = 'Родитель';
-            $parent->save();
-            $parent->role()->attach(Config::get('constants.roles.parent'));
-
-            $children = new Children();
-            $children->name = mb_convert_case($request->input('children_name'),MB_CASE_TITLE,"UTF-8");
-            $children->is_contract = $request->input('is_contract');
-            //Скрыто в связи с неактуальностью
-            // $children->iin = $request->input('children_iin');
-            $children->group()->associate($getGroup->id);
-
-            $getParent = Client::where('telephone',$request->input('parent_telephone'))->first();
-            $children->parent()->associate($getParent->id);
             
-            $children->save();
+            // dd($groups);
 
-            \Session::flash('message', 'Child successfully created!');
+            return view('manager.childrens',compact('groups'));
+
+        }else {
+            \Session::flash('oops', trans('messages.you_dont_have_perm_for_open_user'));
+            return \Redirect('manager');
         }
-        
-        // dd($groups);
-
-        return view('manager.childrens',compact('groups'));
     }
 
 /*
@@ -574,7 +754,7 @@ class ManagerController extends Controller
             if($children->name !== ''){
                 $children->save();
             }else {
-                \Session::flash('oops', 'Sorry something went wrong. Please fill fields!');
+                 \Session::flash('oops', trans('messages.please_fill_fields'));
                 return \Redirect('manager/childrens/'.$children->id);
             }
             
@@ -588,14 +768,14 @@ class ManagerController extends Controller
                 if(strlen($request->input('parent_telephone'.$parent->id)) == Config::get('constants.length.telephone')){
                     $parent->telephone = $request->input('parent_telephone'.$parent->id);
                 }else {
-                    \Session::flash('oops', 'Sorry something went wrong. Please fill number correctly!');
+                     \Session::flash('oops', trans('messages.please_fill_number_correctly'));
                     return \Redirect('manager/childrens/'.$children->id);
                 }
                 
                 if($parent->name !== ''){
                     $parent->save();   
                 }else {
-                    \Session::flash('oops', 'Sorry something went wrong. Please fill fields!');
+                     \Session::flash('oops', trans('messages.please_fill_fields'));
                     return \Redirect('manager/childrens/'.$children->id);
                 }
             }
@@ -604,14 +784,61 @@ class ManagerController extends Controller
             // ]);
 
         }catch(QueryException $e){
-            \Session::flash('oops', 'Sorry something went wrong. Please fill fields!');
+             \Session::flash('oops', trans('messages.please_fill_fields'));
             return \Redirect('manager/childrens/'.$children->id);
         }
         
 
-        \Session::flash('message', 'Successfully updated!');
+        \Session::flash('message', trans('messages.successfully_updated'));
 
         return \Redirect('manager/childrens');
     }
+
+    public function settings() {
+
+        $kindergarten = DB::table('kindergartens')
+                        ->select('kindergarten_users.kindergarten_id')
+                        ->join('kindergarten_users','kindergarten_users.kindergarten_id','=','kindergartens.id')
+                        ->join('users','users.id','=','kindergarten_users.user_id')
+                        ->where('kindergarten_users.user_id',\Auth::user()->id)
+                        ->first();
+        $setting = Setting::where('kindergarten_id',$kindergarten->kindergarten_id)->first();
+
+        return view('manager.settings',compact('kindergarten','setting'));
+    }
+
+    public function storeSettings(Request $request) {
+
+        //get our kindergarten
+        $kindergarten = DB::table('kindergartens')
+                        ->select('kindergarten_users.kindergarten_id')
+                        ->join('kindergarten_users','kindergarten_users.kindergarten_id','=','kindergartens.id')
+                        ->join('users','users.id','=','kindergarten_users.user_id')
+                        ->where('kindergarten_users.user_id',\Auth::user()->id)
+                        ->first();
+        $setting = Setting::where('kindergarten_id',$kindergarten->kindergarten_id)->first();
+        if($setting){
+            $setting->is_group_module = $request->input('is_group_module');
+            $setting->is_user_module = $request->input('is_user_module');
+            $setting->is_menu_module = $request->input('is_menu_module');
+            $setting->is_pp_module = $request->input('is_pp_module');
+            $setting->is_prolongation = $request->input('is_prolongation');
+            $setting->save();
+        }else {
+            $settings = new Setting();
+            $settings->kindergarten_id = $kindergarten->kindergarten_id;
+            $settings->is_group_module = $request->input('is_group_module');
+            $settings->is_user_module = $request->input('is_user_module');
+            $settings->is_menu_module = $request->input('is_menu_module');
+            $settings->is_pp_module = $request->input('is_pp_module');
+            $settings->is_prolongation = $request->input('is_prolongation');
+            $settings->save();
+        }
+
+        \Session::flash('message', trans('messages.successfully_settings_updated'));
+
+        return \Redirect('manager/settings');
+    }
+    
 
 }

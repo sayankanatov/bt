@@ -10,8 +10,21 @@
             <li class="nav-item">
                 <a class="btn btn-secondary" href="{{url(App\Http\Middleware\LocaleMiddleware::getLocale().'/manager/roles')}}">@lang('messages.roles')</a>
             </li>
+
+            @if(App\Models\Setting::where('kindergarten_id',4)->pluck('is_group_module')->first() == 0)
+                <li class="nav-item">
+                    <a class="btn btn-success" href="{{url(App\Http\Middleware\LocaleMiddleware::getLocale().'/manager/groups')}}">@lang('messages.groups')</a>
+                </li>
+            @endif
+            
+            @if(App\Models\Setting::where('kindergarten_id',4)->pluck('is_user_module')->first() == 0)
+                <li class="nav-item">
+                    <a class="btn btn-warning" href="{{url(App\Http\Middleware\LocaleMiddleware::getLocale().'/manager/childrens')}}">@lang('messages.users')</a>
+                </li>
+            @endif
+            
             <li class="nav-item">
-                <a class="btn btn-warning" href="{{url(App\Http\Middleware\LocaleMiddleware::getLocale().'/manager/childrens')}}">@lang('messages.users')</a>
+                <a class="btn btn-danger" href="{{url(App\Http\Middleware\LocaleMiddleware::getLocale().'/manager/settings')}}">@lang('messages.settings')</a>
             </li>
         </ul>
         

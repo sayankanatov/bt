@@ -71,10 +71,19 @@ Route::group(['prefix' => App\Http\Middleware\LocaleMiddleware::getLocale()], fu
         Route::get('/roles', 'ManagerController@roles');
         Route::post('/roles', 'ManagerController@storeRoles');
 
+        Route::get('/groups', ['as' => 'groups','uses' => 'ManagerController@groups']);
+        Route::post('/groups', ['as' => 'groups','uses' => 'ManagerController@groups']);
+        Route::get('/groups/{id}', 'ManagerController@editGroup');
+        Route::post('/groups/{id}', 'ManagerController@updateGroup');
+
         Route::get('/childrens', ['as' => 'childrens','uses' => 'ManagerController@childrens']);
         Route::post('/childrens', ['as' => 'childrens','uses' => 'ManagerController@childrens']);
         Route::get('/childrens/{id}', 'ManagerController@editChild');
         Route::post('/childrens/{id}','ManagerController@updateChild');
+
+        Route::get('/settings', 'ManagerController@settings');
+        Route::post('/settings', 'ManagerController@storeSettings');
+
     });
 });
 
@@ -94,7 +103,7 @@ Route::get('setlocale/{lang}', function ($lang) {
     if (in_array($segments[1], App\Http\Middleware\LocaleMiddleware::$languages)) {
 
         unset($segments[1]); //удаляем метку
-    } 
+    }
     
     //Добавляем метку языка в URL (если выбран не язык по-умолчанию)
     if ($lang != App\Http\Middleware\LocaleMiddleware::$mainLanguage){ 

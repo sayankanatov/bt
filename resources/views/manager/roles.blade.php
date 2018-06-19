@@ -20,31 +20,7 @@
 <form role="form" action="{{action('ManagerController@storeRoles',[])}}" method="post">
 	@csrf
 	<!-- FIRST ROW -->
-	<div class="form-row">
-  	<div class="form-group col-md-4">
-      <label>@lang('messages.description')</label>
-      <input type="text" class="form-control" readonly="true" value="{{isset($deputy->description) ? $deputy->description : ''}}">
-    </div>
-    <div class="form-group col-md-4">
-      <label>@lang('messages.by_default') @lang('messages.deputy')</label>
-      <input type="text" class="form-control" name="role_name1" value="{{isset($deputy) ? $deputy->role_name : ''}}" placeholder="@lang('messages.deputy')">
-    </div>
-    <div class="form-group col-md-4">
-
-      <label>@lang('messages.id_and_tel')</label>
-      <div class="input-group md-4">
-        <div class="input-group-prepend">
-          <span class="input-group-text">+7</span>
-        </div>
-        <input type="tel" class="form-control form-control-sm" aria-describedby="basic-addon3" required="required" data-mask="(000)000 00 00" data-mask-selectonfocus="true" placeholder="(___)__ __ __" name="tel1" value="{{isset($deputy) ? $deputy->telephone : ''}}">
-      </div>
-      <label>@lang('messages.fio')</label>
-        <input type="text" class="form-control form-control-sm" name="fio1" value="{{isset($deputy) ? $deputy->name : ''}}" required="required">
-
-    </div>
-  </div>
   
-  <!-- SECOND ROW -->
   <div class="form-row">
   	<div class="form-group col-md-4">
       <label>@lang('messages.description')</label>
@@ -69,7 +45,8 @@
 
     </div>
   </div>
-  <!-- THIRD ROW -->
+  <!-- SECOND ROW -->
+  
   <div class="form-row">
   	<div class="form-group col-md-4">
       <label>@lang('messages.description')</label>
@@ -92,7 +69,8 @@
       <input type="text" class="form-control form-control-sm" name="fio3" value="{{isset($nurse) ? $nurse->name : ''}}" required="true">
     </div>
   </div>
-  <!-- FOURTH ROW -->
+  <!-- THIRD ROW -->
+  
   <div class="form-row">
   	<div class="form-group col-md-4">
       <label>@lang('messages.description')</label>
@@ -114,7 +92,8 @@
       <input type="text" class="form-control form-control-sm" name="fio4" value="{{isset($accountant) ? $accountant->name : ''}}" required="required">
     </div>
   </div>
-  <!-- FIFTH ROW -->
+  <!-- FOURTH ROW -->
+  
   <div class="form-row">
   	<div class="form-group col-md-4">
       <label>@lang('messages.description')</label>
@@ -136,7 +115,8 @@
       <input type="text" class="form-control form-control-sm" name="fio5" value="{{isset($storekeeper) ? $storekeeper->name : ''}}" required="required">
     </div>
   </div>
-  <!-- SIXTH ROW -->
+  <!-- FIFTH ROW -->
+  
   @if($mentors->isEmpty())
   <div class="form-row">
     <div class="form-group col-md-4">
@@ -160,7 +140,8 @@
     </div>
   </div>
   @endif
-  <!-- SEVEN ROW -->
+  <!-- SIXTH ROW -->
+  
   @if(!empty($mentors))
   @foreach($mentors as $mentor)
   <div class="form-row">

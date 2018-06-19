@@ -61,7 +61,7 @@ class AccountController extends Controller
             //Устанавливаем детсаду принадлежность к городу
             $kindergarten->city()->attach($city);
 
-            \Session::flash('message', 'Successfully created!');
+            \Session::flash('message', trans('messages.successfully_created'));
         }
 
         // Выбираем детсад к которому будет относиться новый юзер
@@ -133,7 +133,7 @@ class AccountController extends Controller
 
         $kindergarten->save();
 
-        \Session::flash('message', 'Successfully updated!');
+        \Session::flash('message', trans('messages.successfully_updated'));
 
         return \Redirect('account/kindergarten');
     }
@@ -145,7 +145,7 @@ class AccountController extends Controller
         $kindergarten = KinderGarten::find($id);
         $kindergarten->delete();
         
-        \Session::flash('message', 'Successfully deleted!');
+        \Session::flash('message', trans('messages.successfully_deleted'));
         // redirect
         return \Redirect::to('account/kindergarten');
     }
