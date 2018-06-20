@@ -58,10 +58,10 @@ class ClientController extends Controller
         $right_settings = Setting::where('kindergarten_id',$kindergarten->id)->first();
 
         //check setting permissions
-        if($right_settings->is_group_module == 1){
+        if($right_settings && $right_settings->is_group_module == 1){
             //get all groups
             $groups = DB::table('groups')->select('*')
-                        ->where('groups.kindergarten_id',$kindergarten->id)
+                        ->where('groups.kindergarten_id',$kindergarten->id)                      
                         ->get();
             // dd($groups);
 
@@ -114,25 +114,25 @@ class ClientController extends Controller
                 ->toArray();
 
             $notExistInFirstMentors = DB::table('clients')
-                    ->select('clients.name','clients.telephone','roles.name as role_name','roles.description','clients.id')
-                    ->join('role_clients','role_clients.client_id','=','clients.id')
-                    ->join('kindergarten_clients','kindergarten_clients.client_id','=','clients.id')
-                    ->join('roles','roles.id','=','role_clients.role_id')
-                    ->where('kindergarten_clients.kindergarten_id',$kindergarten->id)
-                    ->where('role_clients.role_id',Config::get('constants.roles.mentor'))
-                    ->whereNotIn('clients.id',$existInFirstMentors)
-                    ->get();
+                ->select('clients.name','clients.telephone','roles.name as role_name','roles.description','clients.id')
+                ->join('role_clients','role_clients.client_id','=','clients.id')
+                ->join('kindergarten_clients','kindergarten_clients.client_id','=','clients.id')
+                ->join('roles','roles.id','=','role_clients.role_id')
+                ->where('kindergarten_clients.kindergarten_id',$kindergarten->id)
+                ->where('role_clients.role_id',Config::get('constants.roles.mentor'))
+                ->whereNotIn('clients.id',$existInFirstMentors)
+                ->get();
 
             $notExistInSecondMentors = DB::table('clients')
-                    ->select('clients.name','clients.telephone','roles.name as role_name','roles.description','clients.id')
-                    ->join('role_clients','role_clients.client_id','=','clients.id')
-                    ->join('kindergarten_clients','kindergarten_clients.client_id','=','clients.id')
-                    ->join('roles','roles.id','=','role_clients.role_id')
-                    ->where('kindergarten_clients.kindergarten_id',$kindergarten->id)
-                    ->where('role_clients.role_id',Config::get('constants.roles.mentor'))
-                    ->whereNotIn('clients.id',$existInSecondMentors)
-                    ->get();
-                
+                ->select('clients.name','clients.telephone','roles.name as role_name','roles.description','clients.id')
+                ->join('role_clients','role_clients.client_id','=','clients.id')
+                ->join('kindergarten_clients','kindergarten_clients.client_id','=','clients.id')
+                ->join('roles','roles.id','=','role_clients.role_id')
+                ->where('kindergarten_clients.kindergarten_id',$kindergarten->id)
+                ->where('role_clients.role_id',Config::get('constants.roles.mentor'))
+                ->whereNotIn('clients.id',$existInSecondMentors)
+                ->get();
+                    
             // dd($notExistInSecondMentors);
 
             //Создаем группу
@@ -160,9 +160,8 @@ class ClientController extends Controller
 
             \Session::flash('oops', trans('messages.you_dont_have_perm_for_open_group'));
             return \Redirect('user/home');
-        }
-
-
+        }   
+        
     }
 
     public function editGroup($id){
@@ -263,8 +262,9 @@ class ClientController extends Controller
 
         $right_settings = Setting::where('kindergarten_id',$kindergarten->id)->first();
 
-        //check setting permissions
-        if($right_settings->is_user_module == 1){
+        
+            //check setting permissions
+        if($right_settings && $right_settings->is_user_module == 1){
 
             $groups = Group::where('first_mentor_id',\Auth::user()->id)
                     ->orWhere('second_mentor_id',\Auth::user()->id)
@@ -275,7 +275,7 @@ class ClientController extends Controller
             $getGroup = Group::where('id',$request->input('group_id'))->first();
 
             if($request->has('child-submit')){
-                
+                    
                 $parent = new Client();
                 //Скрыто в связи с неактуальностью
                 // $parent->name = mb_convert_case($request->input('parent_name'),MB_CASE_TITLE,"UTF-8");
@@ -301,12 +301,12 @@ class ClientController extends Controller
 
                 $getParent = Client::where('telephone',$request->input('parent_telephone'))->first();
                 $children->parent()->associate($getParent->id);
-                
+                    
                 $children->save();
 
                 \Session::flash('message', trans('messages.child_successfully_created'));
             }
-            
+                
             // dd($groups);
 
             return view('client.childrens',compact('groups'));
@@ -315,6 +315,7 @@ class ClientController extends Controller
             \Session::flash('oops', trans('messages.you_dont_have_perm_for_open_user'));
             return \Redirect('user/home');
         }
+        
     }
 
 /*

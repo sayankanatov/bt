@@ -98,6 +98,13 @@ return [
 	'successfully_updated_roles' => 'Роли успешно обновлены!',
 	'successfully_settings_updated' => 'Настройки успешно обновлены!',
 	'successfully_updated_general' => 'Раздел Общая информация успешно обновлена!',
-
-
+	'please_fill_settings' => 'Что-то пошло не так. Пожалуйста заполните настройки!',
+	'you_dont_have_perm_for_open_pp' => 'У вас нет прав для раздела Продукты и Поставщики!',
+	'successfully_created_contractor' => 'Поставщик успешно создан',
+	'contractors' => 'Поставщики',
+	'add_contractor' => 'Добавить поставщика',
+	'foods' => 'Продукты',
+	'price' => 'Цена',
+	'balance' => 'Остаток',
+	'contractor' => 'Поставщик',
 ];

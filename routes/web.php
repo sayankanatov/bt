@@ -84,11 +84,17 @@ Route::group(['prefix' => App\Http\Middleware\LocaleMiddleware::getLocale()], fu
         Route::get('/settings', 'ManagerController@settings');
         Route::post('/settings', 'ManagerController@storeSettings');
 
+        Route::get('/contractors', ['as' => 'contractors','uses' => 'ManagerController@contractors']);
+        Route::post('/contractors', ['as' => 'contractors','uses' => 'ManagerController@contractors']);
+        Route::get('/contractors/{id}', 'ManagerController@editContractor');
+        Route::post('/contractors/{id}', 'ManagerController@updateContractor');
+        Route::delete('/contractors/destroy/{id}', 'ManagerController@destroyContractor');
+
+        Route::get('/foods', 'ManagerController@foods');
+        Route::post('/foods', 'ManagerController@storeFoods');
+
     });
 });
-
-// Route::get('/test', 'HomeController@tets')->name('tets');
-
 
 //Переключение языков
 Route::get('setlocale/{lang}', function ($lang) {

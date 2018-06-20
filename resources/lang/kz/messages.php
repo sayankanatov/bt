@@ -98,5 +98,14 @@ return [
 	'successfully_updated_roles' => 'Successfully updated roles!',
 	'successfully_settings_updated' => 'Successfully settings updated!',
 	'successfully_updated_general' => 'Successfully updated general information!',
+	'please_fill_settings' => 'Sorry something went wrong. Please fill settings!',
+	'you_dont_have_perm_for_open_pp' => 'You dont have permissions for openning Foods and Contractors!',
+	'successfully_created_contractor' => 'Contractor succesfully created!',
+	'contractors' => 'Contractors',
+	'add_contractor' => 'Add contractor',
+	'foods' => 'Foods',
+	'price' => 'Price',
+	'balance' => 'Balance',
+	'contractor' => 'Contractor',
 
 ];

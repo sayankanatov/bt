@@ -17,7 +17,10 @@ use App\Models\Client;
 use App\Models\GroupCategory;
 use App\Models\Group;
 use App\Models\Children;
+use App\Models\Contractor;
 use App\Models\Setting;
+use App\Models\Food;
+use App\Models\KinderGartenFood;
 use DB;
 use Config;
 
@@ -48,6 +51,8 @@ class ManagerController extends Controller
         $groups_link = '/manager/groups';
         $user_base_link = '/manager/childrens';
         $settings_link = '/manager/settings';
+        $contractor_link = '/manager/contractors';
+        $food_link = '/manager/foods';
 
         return view('manager.index',compact(
             'general_info_link',
@@ -55,7 +60,9 @@ class ManagerController extends Controller
             'groups_link',
             'user_base_link',
             'settings_link',
-            'right_settings'
+            'right_settings',
+            'contractor_link',
+            'food_link'
         ));
     }
 
@@ -471,11 +478,11 @@ class ManagerController extends Controller
         $right_settings = Setting::where('kindergarten_id',$kindergarten->id)->first();
 
         //check setting permissions
-        if($right_settings->is_group_module == 0){
+        if($right_settings && $right_settings->is_group_module == 0){
             //get all groups
             $groups = DB::table('groups')->select('*')
-                        ->where('groups.kindergarten_id',$kindergarten->id)
-                        ->get();
+                    ->where('groups.kindergarten_id',$kindergarten->id)
+                    ->get();
             // dd($groups);
 
             //get flash message in view
@@ -494,13 +501,13 @@ class ManagerController extends Controller
             $group_categories = GroupCategory::all();
 
             $mentors = DB::table('clients')
-                    ->select('clients.name','clients.telephone','roles.name as role_name','roles.description','clients.id')
-                    ->join('role_clients','role_clients.client_id','=','clients.id')
-                    ->join('kindergarten_clients','kindergarten_clients.client_id','=','clients.id')
-                    ->join('roles','roles.id','=','role_clients.role_id')
-                    ->where('kindergarten_clients.kindergarten_id',$kindergarten->id)
-                    ->where('role_clients.role_id',Config::get('constants.roles.mentor'))
-                    ->get();
+                ->select('clients.name','clients.telephone','roles.name as role_name','roles.description','clients.id')
+                ->join('role_clients','role_clients.client_id','=','clients.id')
+                ->join('kindergarten_clients','kindergarten_clients.client_id','=','clients.id')
+                ->join('roles','roles.id','=','role_clients.role_id')
+                ->where('kindergarten_clients.kindergarten_id',$kindergarten->id)
+                ->where('role_clients.role_id',Config::get('constants.roles.mentor'))
+                ->get();
 
             //выборка воспитателей стала ограниченной таким образом что воспитатели не могут быть одновременно быть в двух разных группах.
 
@@ -527,25 +534,25 @@ class ManagerController extends Controller
                 ->toArray();
 
             $notExistInFirstMentors = DB::table('clients')
-                    ->select('clients.name','clients.telephone','roles.name as role_name','roles.description','clients.id')
-                    ->join('role_clients','role_clients.client_id','=','clients.id')
-                    ->join('kindergarten_clients','kindergarten_clients.client_id','=','clients.id')
-                    ->join('roles','roles.id','=','role_clients.role_id')
-                    ->where('kindergarten_clients.kindergarten_id',$kindergarten->id)
-                    ->where('role_clients.role_id',Config::get('constants.roles.mentor'))
-                    ->whereNotIn('clients.id',$existInFirstMentors)
-                    ->get();
+                ->select('clients.name','clients.telephone','roles.name as role_name','roles.description','clients.id')
+                ->join('role_clients','role_clients.client_id','=','clients.id')
+                ->join('kindergarten_clients','kindergarten_clients.client_id','=','clients.id')
+                ->join('roles','roles.id','=','role_clients.role_id')
+                ->where('kindergarten_clients.kindergarten_id',$kindergarten->id)
+                ->where('role_clients.role_id',Config::get('constants.roles.mentor'))
+                ->whereNotIn('clients.id',$existInFirstMentors)
+                ->get();
 
             $notExistInSecondMentors = DB::table('clients')
-                    ->select('clients.name','clients.telephone','roles.name as role_name','roles.description','clients.id')
-                    ->join('role_clients','role_clients.client_id','=','clients.id')
-                    ->join('kindergarten_clients','kindergarten_clients.client_id','=','clients.id')
-                    ->join('roles','roles.id','=','role_clients.role_id')
-                    ->where('kindergarten_clients.kindergarten_id',$kindergarten->id)
-                    ->where('role_clients.role_id',Config::get('constants.roles.mentor'))
-                    ->whereNotIn('clients.id',$existInSecondMentors)
-                    ->get();
-                
+                ->select('clients.name','clients.telephone','roles.name as role_name','roles.description','clients.id')
+                ->join('role_clients','role_clients.client_id','=','clients.id')
+                 ->join('kindergarten_clients','kindergarten_clients.client_id','=','clients.id')
+                 ->join('roles','roles.id','=','role_clients.role_id')
+                 ->where('kindergarten_clients.kindergarten_id',$kindergarten->id)
+                 ->where('role_clients.role_id',Config::get('constants.roles.mentor'))
+                 ->whereNotIn('clients.id',$existInSecondMentors)
+                 ->get();
+                    
             // dd($notExistInSecondMentors);
 
             //Создаем группу
@@ -573,7 +580,10 @@ class ManagerController extends Controller
         }else {
             \Session::flash('oops', trans('messages.you_dont_have_perm_for_open_group'));
             return \Redirect('manager');
-        }
+        } 
+            
+        
+        
     }
 
     public function editGroup($id){
@@ -673,18 +683,19 @@ class ManagerController extends Controller
 
         $right_settings = Setting::where('kindergarten_id',$kindergarten->id)->first();
 
+        
         //check setting permissions
-        if($right_settings->is_user_module == 0){
+        if($right_settings && $right_settings->is_user_module == 0){
 
             $groups = Group::where('kindergarten_id',$kindergarten->id)->get();
 
             //Вывод для каждой группы флэш сообщения о необходимом количестве детей
-            
+                
             // dd($groups);
             $getGroup = Group::where('id',$request->input('group_id'))->first();
 
             if($request->has('child-submit')){
-                
+                    
                 $parent = new Client();
                 //Скрыто в связи с неактуальностью
                 // $parent->name = mb_convert_case($request->input('parent_name'),MB_CASE_TITLE,"UTF-8");
@@ -692,7 +703,7 @@ class ManagerController extends Controller
                 if(strlen($request->input('parent_telephone')) == Config::get('constants.length.telephone')){
                     $parent->telephone = $request->input('parent_telephone');
                 }else {
-                     \Session::flash('oops', trans('messages.please_fill_number_correctly'));
+                    \Session::flash('oops', trans('messages.please_fill_number_correctly'));
                     return \Redirect('manager/childrens');
                 }
 
@@ -709,27 +720,27 @@ class ManagerController extends Controller
                 $children->group()->associate($getGroup->id);
 
                 $getParent = Client::where('telephone',$request->input('parent_telephone'))->first();
-                $children->parent()->associate($getParent->id);
-                
+                    $children->parent()->associate($getParent->id);
+                    
                 $children->save();
 
                 \Session::flash('message', trans('messages.child_successfully_created'));
             }
-            
+                
             // dd($groups);
 
             return view('manager.childrens',compact('groups'));
 
         }else {
             \Session::flash('oops', trans('messages.you_dont_have_perm_for_open_user'));
-            return \Redirect('manager');
+            return \Redirect('manager');            
         }
     }
 
-/*
-* Edit child
-*
-*/
+    /*
+    * Edit child
+    *
+    */
     public function editChild($id){
 
         $children = Children::find($id);
@@ -839,6 +850,164 @@ class ManagerController extends Controller
 
         return \Redirect('manager/settings');
     }
+
+    public function contractors(Request $request){
+
+        $kindergarten = DB::table('kindergartens')->select('kindergartens.id','kindergartens.group_count')
+            ->join('kindergarten_users','kindergarten_users.kindergarten_id','=','kindergartens.id')
+            ->where('kindergarten_users.user_id',\Auth::user()->id)
+            ->first();
+
+        $right_settings = Setting::where('kindergarten_id',$kindergarten->id)->first();
+
+        //check setting permissions
+        if($right_settings && $right_settings->is_pp_module == 0){
+
+            $contractors = Contractor::where('kindergarten_id',$kindergarten->id)->where('is_deleted',0)->get();
+
+            //Создаем поставщика
+            if(!empty($request->input('contractor_title')) ) {
+
+                $contractor = new Contractor();
+                $contractor->title = mb_convert_case($request->input('contractor_title'),MB_CASE_TITLE,"UTF-8" );
+                
+                if(strlen($request->input('contractor_telephone')) == Config::get('constants.length.telephone')){
+                    $contractor->telephone = $request->input('contractor_telephone');
+                }else {
+                    \Session::flash('oops', trans('messages.please_fill_number_correctly'));
+                    return \Redirect('manager/contractors');
+                }
+
+                $contractor->kindergarten_id = $kindergarten->id;
+
+                $contractor->save();
+
+                \Session::flash('message', trans('messages.successfully_created_contractor'));
+
+                if($request->has('add-contractor-submit')){
+                    return \Redirect('manager/contractors');
+                }
+            }
+
+            return view('manager.contractors',compact('contractors'));
+        }else {
+            \Session::flash('oops', trans('messages.you_dont_have_perm_for_open_pp'));
+            return \Redirect('manager'); 
+        }
+    }
+
+    public function editContractor($id){
+        $kindergarten = DB::table('kindergartens')->select('kindergartens.id','kindergartens.group_count')
+            ->join('kindergarten_users','kindergarten_users.kindergarten_id','=','kindergartens.id')
+            ->where('kindergarten_users.user_id',\Auth::user()->id)
+            ->first();
+
+        $right_settings = Setting::where('kindergarten_id',$kindergarten->id)->first();
+
+        //check setting permissions
+        if($right_settings && $right_settings->is_pp_module == 0){
+
+            $contractor = Contractor::find($id);
+            return view('manager.edit-contractor',compact('contractor'));
+
+        }else {
+            \Session::flash('oops', trans('messages.you_dont_have_perm_for_open_pp'));
+            return \Redirect('manager');
+        }
+    }
+
+    public function updateContractor(Request $request, $id){
+        
+        // get the contractor
+        try{
+            $contractor = Contractor::find($id);
+            $contractor->title = mb_convert_case($request->input('contractor_title'),MB_CASE_TITLE,"UTF-8" );
+
+            if(strlen($request->input('contractor_telephone')) == Config::get('constants.length.telephone')){
+                $contractor->telephone = $request->input('contractor_telephone');
+            }else {
+                \Session::flash('oops', trans('messages.please_fill_number_correctly'));
+                return \Redirect('manager/contractors/'.$children->id);
+            }
+
+            if($contractor->title !== ''){
+                $contractor->save();
+
+            }else {
+                 \Session::flash('oops', trans('messages.please_fill_fields'));
+                return \Redirect('manager/contractors/'.$contractor->id);
+            }
+
+        }catch(QueryException $e){
+             \Session::flash('oops', trans('messages.please_fill_fields'));
+            return \Redirect('manager/contractors/'.$children->id);
+        }
+        
+
+        \Session::flash('message', trans('messages.successfully_updated'));
+
+        return \Redirect('manager/contractors');
+
+    }
     
+    public function destroyContractor(Request $request,$id){
+        // delete
+        $contractor = Contractor::find($id);
+        $contractor->is_deleted = 1;
+        $contractor->save();
+        
+        \Session::flash('message', trans('messages.successfully_deleted'));
+        // redirect
+        return \Redirect::to('manager/contractors');
+    }
+
+    public function foods(){
+        $kindergarten = DB::table('kindergartens')->select('kindergartens.id')
+            ->join('kindergarten_users','kindergarten_users.kindergarten_id','=','kindergartens.id')
+            ->where('kindergarten_users.user_id',\Auth::user()->id)
+            ->first();
+
+        $right_settings = Setting::where('kindergarten_id',$kindergarten->id)->first();
+
+        //check setting permissions
+        if($right_settings && $right_settings->is_pp_module == 0){
+
+            $foods = Food::all();
+
+            $contractors = Contractor::where('kindergarten_id',$kindergarten->id)
+                                ->where('is_deleted',0)->get();
+
+            return view('manager.foods',compact('foods','contractors'));
+        }else {
+            \Session::flash('oops', trans('messages.you_dont_have_perm_for_open_pp'));
+            return \Redirect('manager');
+        }
+    }
+
+    public function storeFoods(Request $request){
+
+        $kindergarten = DB::table('kindergartens')->select('kindergartens.id')
+            ->join('kindergarten_users','kindergarten_users.kindergarten_id','=','kindergartens.id')
+            ->where('kindergarten_users.user_id',\Auth::user()->id)
+            ->first();
+
+        foreach ($request->foods as $key => $value) {
+            # code...
+            $food = new KinderGartenFood();
+            $food->food_id = $value;
+            $food->kindergarten_id = $kindergarten->id;
+            $food->food_name = $request->input('food_name'.$value);
+            $food->contractor_id = $request->input('contractor'.$value);
+            $food->price = $request->input('price'.$value);
+            $food->balance = $request->input('balance'.$value);
+            $food->save();
+
+            \Session::flash('message', trans('messages.successfully_created'));
+
+            if($request->has('food-submit')){
+                return \Redirect('manager/foods');
+            }
+        }
+    }
 
 }

@@ -74,6 +74,18 @@
                     </li>
                 @endif
             @endisset
+
+            @isset($right_settings)
+                @if($right_settings->is_pp_module == 0)
+                    <li class="nav-item">
+                        <a class="btn btn-info btn-lg" href="{{url(App\Http\Middleware\LocaleMiddleware::getLocale().$contractor_link)}}">@lang('messages.contractors')</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="btn btn-light btn-lg" href="{{url(App\Http\Middleware\LocaleMiddleware::getLocale().$food_link)}}">@lang('messages.foods')</a>
+                    </li>
+                @endif
+            @endisset
             <li class="nav-item">
                 <a class="btn btn-danger btn-lg" href="{{url(App\Http\Middleware\LocaleMiddleware::getLocale().$settings_link)}}">@lang('messages.settings')</a>
             </li>
