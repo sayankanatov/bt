@@ -34,7 +34,10 @@ class KindergartenFood extends Model
     | RELATIONS
     |--------------------------------------------------------------------------
     */
-
+    public function food() 
+    {
+            return $this->belongsTo('App\Models\Food','id');
+    }
     /*
     |--------------------------------------------------------------------------
     | SCOPES

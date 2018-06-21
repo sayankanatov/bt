@@ -34,7 +34,10 @@ class Food extends Model
     | RELATIONS
     |--------------------------------------------------------------------------
     */
-
+    public function kinderfood()
+    {
+        return $this->hasMany('App\Models\KindergartenFood','food_id');
+    }
     /*
     |--------------------------------------------------------------------------
     | SCOPES

@@ -972,12 +972,14 @@ class ManagerController extends Controller
         //check setting permissions
         if($right_settings && $right_settings->is_pp_module == 0){
 
+            $kfoods = KinderGartenFood::where('kindergarten_id',$kindergarten->id)->get();
             $foods = Food::all();
+            // dd($kfoods);
 
             $contractors = Contractor::where('kindergarten_id',$kindergarten->id)
                                 ->where('is_deleted',0)->get();
 
-            return view('manager.foods',compact('foods','contractors'));
+            return view('manager.foods',compact('contractors','kfoods','foods'));
         }else {
             \Session::flash('oops', trans('messages.you_dont_have_perm_for_open_pp'));
             return \Redirect('manager');
@@ -990,23 +992,40 @@ class ManagerController extends Controller
             ->join('kindergarten_users','kindergarten_users.kindergarten_id','=','kindergartens.id')
             ->where('kindergarten_users.user_id',\Auth::user()->id)
             ->first();
+        if($request->has('foods')){
+            foreach ($request->foods as $key => $value) {
+        
+                $kfood = new KinderGartenFood();
+                $kfood->food_id = $value;
+                $kfood->kindergarten_id = $kindergarten->id;
+                // $food->food_name = $request->input('food_name'.$value);
+                // $food->contractor_id = $request->input('contractor'.$value);
+                // $food->price = $request->input('price'.$value);
+                // $food->balance = $request->input('balance'.$value);
+                if($request->has('add-food-submit')){
+                    $kfood->save();
+                    \Session::flash('message', trans('messages.successfully_created'));
+                }
 
-        foreach ($request->foods as $key => $value) {
-            # code...
-            $food = new KinderGartenFood();
-            $food->food_id = $value;
-            $food->kindergarten_id = $kindergarten->id;
-            $food->food_name = $request->input('food_name'.$value);
-            $food->contractor_id = $request->input('contractor'.$value);
-            $food->price = $request->input('price'.$value);
-            $food->balance = $request->input('balance'.$value);
-            $food->save();
-
-            \Session::flash('message', trans('messages.successfully_created'));
-
-            if($request->has('food-submit')){
-                return \Redirect('manager/foods');
             }
+            return \Redirect('manager/foods');
+        }
+        if($request->has('kfood-submit')){
+
+            $kfoods = KinderGartenFood::where('kindergarten_id',$kindergarten->id)->get();
+
+            foreach ($kfoods as $key => $kfood) {
+                # code...
+                $kfood = KinderGartenFood::find($kfood->id);
+                $kfood->food_name = $request->input('food_name'.$kfood->id);
+                $kfood->contractor_id = $request->get('contractor'.$kfood->id);
+                $kfood->price = $request->input('price'.$kfood->id);
+                $kfood->balance = $request->input('balance'.$kfood->id);
+                $kfood->save();
+
+            }
+            \Session::flash('message', trans('messages.successfully_updated'));
+            return \Redirect('manager/foods');
         }
     }
 
