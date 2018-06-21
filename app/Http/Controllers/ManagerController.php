@@ -927,7 +927,7 @@ class ManagerController extends Controller
                 $contractor->telephone = $request->input('contractor_telephone');
             }else {
                 \Session::flash('oops', trans('messages.please_fill_number_correctly'));
-                return \Redirect('manager/contractors/'.$children->id);
+                return \Redirect('manager/contractors/'.$contractor->id);
             }
 
             if($contractor->title !== ''){
@@ -940,7 +940,7 @@ class ManagerController extends Controller
 
         }catch(QueryException $e){
              \Session::flash('oops', trans('messages.please_fill_fields'));
-            return \Redirect('manager/contractors/'.$children->id);
+            return \Redirect('manager/contractors/'.$contractor->id);
         }
         
 

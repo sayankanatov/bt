@@ -50,6 +50,15 @@ Route::group(['prefix' => App\Http\Middleware\LocaleMiddleware::getLocale()], fu
         Route::get('/childrens/{id}', 'ClientController@editChild');
         Route::post('/childrens/{id}','ClientController@updateChild');
 
+        Route::get('/contractors', ['as' => 'contractors','uses' => 'ClientController@contractors']);
+        Route::post('/contractors', ['as' => 'contractors','uses' => 'ClientController@contractors']);
+        Route::get('/contractors/{id}', 'ClientController@editContractor');
+        Route::post('/contractors/{id}', 'ClientController@updateContractor');
+        Route::delete('/contractors/destroy/{id}', 'ClientController@destroyContractor');
+
+        Route::get('/foods', 'ClientController@foods');
+        Route::post('/foods', 'ClientController@storeFoods');
+
     });
 
     //route group for koordinator side
