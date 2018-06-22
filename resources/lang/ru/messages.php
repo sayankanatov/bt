@@ -110,5 +110,6 @@ return [
 	'please_add_contractors' => 'Пожалуйста добавьте поставщиков',
 	'foods_not_selected' => 'Продуктов еще не выбрано :(',
 	'title_by_contract' => 'Название по договору',
-	'add_from_foods' => 'Добавить из продуктов'
+	'add_from_foods' => 'Добавить из продуктов',
+	'contractors_and_foods' => 'Поставщики и Продукты'
 ];

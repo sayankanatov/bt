@@ -34,7 +34,10 @@ class Contractor extends Model
     | RELATIONS
     |--------------------------------------------------------------------------
     */
-
+    public function kfood()
+    {
+        return $this->hasMany('App\Models\KindergartenFood','contractor_id');
+    }
     /*
     |--------------------------------------------------------------------------
     | SCOPES

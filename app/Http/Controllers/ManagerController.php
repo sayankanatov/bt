@@ -20,7 +20,7 @@ use App\Models\Children;
 use App\Models\Contractor;
 use App\Models\Setting;
 use App\Models\Food;
-use App\Models\KinderGartenFood;
+use App\Models\KindergartenFood;
 use DB;
 use Config;
 
@@ -51,8 +51,7 @@ class ManagerController extends Controller
         $groups_link = '/manager/groups';
         $user_base_link = '/manager/childrens';
         $settings_link = '/manager/settings';
-        $contractor_link = '/manager/contractors';
-        $food_link = '/manager/foods';
+        $pp_link = '/manager/pp';
 
         return view('manager.index',compact(
             'general_info_link',
@@ -61,8 +60,7 @@ class ManagerController extends Controller
             'user_base_link',
             'settings_link',
             'right_settings',
-            'contractor_link',
-            'food_link'
+            'pp_link'
         ));
     }
 
@@ -851,7 +849,7 @@ class ManagerController extends Controller
         return \Redirect('manager/settings');
     }
 
-    public function contractors(Request $request){
+    public function pp(Request $request){
 
         $kindergarten = DB::table('kindergartens')->select('kindergartens.id','kindergartens.group_count')
             ->join('kindergarten_users','kindergarten_users.kindergarten_id','=','kindergartens.id')
@@ -864,6 +862,7 @@ class ManagerController extends Controller
         if($right_settings && $right_settings->is_pp_module == 0){
 
             $contractors = Contractor::where('kindergarten_id',$kindergarten->id)->where('is_deleted',0)->get();
+            $foods = Food::all();
 
             //Создаем поставщика
             if(!empty($request->input('contractor_title')) ) {
@@ -875,7 +874,7 @@ class ManagerController extends Controller
                     $contractor->telephone = $request->input('contractor_telephone');
                 }else {
                     \Session::flash('oops', trans('messages.please_fill_number_correctly'));
-                    return \Redirect('manager/contractors');
+                    return \Redirect('manager/pp');
                 }
 
                 $contractor->kindergarten_id = $kindergarten->id;
@@ -885,11 +884,29 @@ class ManagerController extends Controller
                 \Session::flash('message', trans('messages.successfully_created_contractor'));
 
                 if($request->has('add-contractor-submit')){
-                    return \Redirect('manager/contractors');
+                    return \Redirect('manager/pp');
                 }
             }
+            if($request->has('foods')){
+                foreach ($request->foods as $key => $value) {
+            
+                    $kfood = new KindergartenFood();
+                    $kfood->food_id = $value;
+                    $kfood->kindergarten_id = $kindergarten->id;
+                    // $kfood->food_name = $request->input('food_name'.$value);
+                    $kfood->contractor_id = $request->input('contractor_id');
+                    // $kfood->price = $request->input('price'.$value);
+                    // $kfood->balance = $request->input('balance'.$value);
+                    if($request->has('add-food-submit')){
+                        $kfood->save();
+                    }
 
-            return view('manager.contractors',compact('contractors'));
+                }
+                \Session::flash('message', trans('messages.successfully_created'));
+                return \Redirect('manager/pp');
+            }
+
+            return view('manager.contractors',compact('contractors','foods'));
         }else {
             \Session::flash('oops', trans('messages.you_dont_have_perm_for_open_pp'));
             return \Redirect('manager'); 
@@ -897,6 +914,7 @@ class ManagerController extends Controller
     }
 
     public function editContractor($id){
+
         $kindergarten = DB::table('kindergartens')->select('kindergartens.id','kindergartens.group_count')
             ->join('kindergarten_users','kindergarten_users.kindergarten_id','=','kindergartens.id')
             ->where('kindergarten_users.user_id',\Auth::user()->id)
@@ -921,13 +939,24 @@ class ManagerController extends Controller
         // get the contractor
         try{
             $contractor = Contractor::find($id);
+
+            if(count($contractor->kfood) > 0){
+                foreach ($contractor->kfood as $key => $kfood) {
+                    # code...
+                    $kfood->food_name = $request->input('food_name'.++$key);
+                    $kfood->price = $request->input('price'.++$key);
+                    $kfood->balance = $request->input('balance'.++$key);
+                    $kfood->save();
+                }
+            }
+
             $contractor->title = mb_convert_case($request->input('contractor_title'),MB_CASE_TITLE,"UTF-8" );
 
             if(strlen($request->input('contractor_telephone')) == Config::get('constants.length.telephone')){
                 $contractor->telephone = $request->input('contractor_telephone');
             }else {
                 \Session::flash('oops', trans('messages.please_fill_number_correctly'));
-                return \Redirect('manager/contractors/'.$contractor->id);
+                return \Redirect('manager/pp/'.$contractor->id);
             }
 
             if($contractor->title !== ''){
@@ -935,18 +964,18 @@ class ManagerController extends Controller
 
             }else {
                  \Session::flash('oops', trans('messages.please_fill_fields'));
-                return \Redirect('manager/contractors/'.$contractor->id);
+                return \Redirect('manager/pp/'.$contractor->id);
             }
 
         }catch(QueryException $e){
              \Session::flash('oops', trans('messages.please_fill_fields'));
-            return \Redirect('manager/contractors/'.$contractor->id);
+            return \Redirect('manager/pp/'.$contractor->id);
         }
         
 
         \Session::flash('message', trans('messages.successfully_updated'));
 
-        return \Redirect('manager/contractors');
+        return \Redirect('manager/pp');
 
     }
     
@@ -958,75 +987,7 @@ class ManagerController extends Controller
         
         \Session::flash('message', trans('messages.successfully_deleted'));
         // redirect
-        return \Redirect::to('manager/contractors');
-    }
-
-    public function foods(){
-        $kindergarten = DB::table('kindergartens')->select('kindergartens.id')
-            ->join('kindergarten_users','kindergarten_users.kindergarten_id','=','kindergartens.id')
-            ->where('kindergarten_users.user_id',\Auth::user()->id)
-            ->first();
-
-        $right_settings = Setting::where('kindergarten_id',$kindergarten->id)->first();
-
-        //check setting permissions
-        if($right_settings && $right_settings->is_pp_module == 0){
-
-            $kfoods = KinderGartenFood::where('kindergarten_id',$kindergarten->id)->get();
-            $foods = Food::all();
-            // dd($kfoods);
-
-            $contractors = Contractor::where('kindergarten_id',$kindergarten->id)
-                                ->where('is_deleted',0)->get();
-
-            return view('manager.foods',compact('contractors','kfoods','foods'));
-        }else {
-            \Session::flash('oops', trans('messages.you_dont_have_perm_for_open_pp'));
-            return \Redirect('manager');
-        }
-    }
-
-    public function storeFoods(Request $request){
-
-        $kindergarten = DB::table('kindergartens')->select('kindergartens.id')
-            ->join('kindergarten_users','kindergarten_users.kindergarten_id','=','kindergartens.id')
-            ->where('kindergarten_users.user_id',\Auth::user()->id)
-            ->first();
-        if($request->has('foods')){
-            foreach ($request->foods as $key => $value) {
-        
-                $kfood = new KinderGartenFood();
-                $kfood->food_id = $value;
-                $kfood->kindergarten_id = $kindergarten->id;
-                // $food->food_name = $request->input('food_name'.$value);
-                // $food->contractor_id = $request->input('contractor'.$value);
-                // $food->price = $request->input('price'.$value);
-                // $food->balance = $request->input('balance'.$value);
-                if($request->has('add-food-submit')){
-                    $kfood->save();
-                    \Session::flash('message', trans('messages.successfully_created'));
-                }
-
-            }
-            return \Redirect('manager/foods');
-        }
-        if($request->has('kfood-submit')){
-
-            $kfoods = KinderGartenFood::where('kindergarten_id',$kindergarten->id)->get();
-
-            foreach ($kfoods as $key => $kfood) {
-                # code...
-                $kfood = KinderGartenFood::find($kfood->id);
-                $kfood->food_name = $request->input('food_name'.$kfood->id);
-                $kfood->contractor_id = $request->get('contractor'.$kfood->id);
-                $kfood->price = $request->input('price'.$kfood->id);
-                $kfood->balance = $request->input('balance'.$kfood->id);
-                $kfood->save();
-
-            }
-            \Session::flash('message', trans('messages.successfully_updated'));
-            return \Redirect('manager/foods');
-        }
+        return \Redirect::to('manager/pp');
     }
 
 }

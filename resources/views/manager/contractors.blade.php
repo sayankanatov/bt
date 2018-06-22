@@ -19,7 +19,7 @@
   
   <div class="page-header">
     <h3>
-      @lang('messages.contractors')
+      @lang('messages.contractors_and_foods')
     </h3>
   </div>
 
@@ -29,8 +29,8 @@
         <thead>
             <th>№</th>
             <th>@lang('messages.title')</th>
-            <th>@lang('messages.telephone')</th>
-            <th>@lang('messages.edit')</th>
+            <th>@lang('messages.add_from_foods')</th>
+            <th>@lang('messages.show')</th>
             <th>@lang('messages.destroy')</th>
         </thead>
       <tbody>
@@ -38,7 +38,41 @@
           <tr>
             <td>{{++$key}}</td>
             <td>{{$contractor->title}}</td>
-            <td>+7 {{$contractor->telephone}}</td>
+            <!-- <td>+7 {{$contractor->telephone}}</td> -->
+            <td>
+              <a id="modal-222{{$contractor->id}}" href="#modal-container-222{{$contractor->id}}" role="button" class="btn btn-primary" data-toggle="modal">@lang('messages.add_from_foods')</a>
+              <div class="modal fade" id="modal-container-222{{$contractor->id}}" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="myModalLabel">
+                        @lang('messages.add_from_foods')
+                      </h5> 
+                      <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">×</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <form role="form" method="post">
+                        @csrf
+                        <div class="form-group">
+                          @foreach($foods as $food)
+                            <div class="form-check">
+                              <input class="form-check-input" type="checkbox" value="{{$food->id}}" name="foods[]">
+                              <label class="form-check-label">{{$food->name_ru}}</label>       
+                            </div>
+                            <input type="hidden" name="contractor_id" value="{{$contractor->id}}">
+                          @endforeach
+                        </div>
+                        <button type="submit" name="add-food-submit" class="btn btn-primary">
+                          @lang('messages.add')
+                        </button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </td>
             <td>
               <a class="btn btn-small btn-info" href="{{ action('ManagerController@editContractor',$contractor->id) }}">@lang('messages.edit')</a>
             </td>

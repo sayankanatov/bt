@@ -36,7 +36,12 @@ class KindergartenFood extends Model
     */
     public function food() 
     {
-            return $this->belongsTo('App\Models\Food','id');
+            return $this->belongsTo('App\Models\Food','food_id');
+    }
+
+    public function contractor() 
+    {
+            return $this->belongsTo('App\Models\Contractor','contractor_id');
     }
     /*
     |--------------------------------------------------------------------------

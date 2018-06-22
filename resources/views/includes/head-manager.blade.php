@@ -25,10 +25,7 @@
 
             @if(App\Models\Setting::where('kindergarten_id',4)->pluck('is_pp_module')->first() === 0)
                 <li class="nav-item">
-                    <a class="btn btn-info" href="{{url(App\Http\Middleware\LocaleMiddleware::getLocale().'/manager/contractors')}}">@lang('messages.contractors')</a>
-                </li>
-                <li class="nav-item">
-                    <a class="btn btn-light" href="{{url(App\Http\Middleware\LocaleMiddleware::getLocale().'/manager/foods')}}">@lang('messages.foods')</a>
+                    <a class="btn btn-info" href="{{url(App\Http\Middleware\LocaleMiddleware::getLocale().'/manager/pp')}}">@lang('messages.contractors_and_foods')</a>
                 </li>
             @endif
             

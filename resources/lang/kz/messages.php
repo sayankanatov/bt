@@ -110,6 +110,7 @@ return [
 	'please_add_contractors' => 'Please add contractors',
 	'foods_not_selected' => 'Foods does not selected :(',
 	'title_by_contract' => 'Title by contract',
-	'add_from_foods' => 'Add from Products'
+	'add_from_foods' => 'Add from Products',
+	'contractors_and_foods' => 'Contractors and Products'
 
 ];

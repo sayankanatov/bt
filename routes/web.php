@@ -50,14 +50,11 @@ Route::group(['prefix' => App\Http\Middleware\LocaleMiddleware::getLocale()], fu
         Route::get('/childrens/{id}', 'ClientController@editChild');
         Route::post('/childrens/{id}','ClientController@updateChild');
 
-        Route::get('/contractors', ['as' => 'contractors','uses' => 'ClientController@contractors']);
-        Route::post('/contractors', ['as' => 'contractors','uses' => 'ClientController@contractors']);
-        Route::get('/contractors/{id}', 'ClientController@editContractor');
-        Route::post('/contractors/{id}', 'ClientController@updateContractor');
-        Route::delete('/contractors/destroy/{id}', 'ClientController@destroyContractor');
-
-        Route::get('/foods', 'ClientController@foods');
-        Route::post('/foods', 'ClientController@storeFoods');
+        Route::get('/pp', ['as' => 'pp','uses' => 'ClientController@pp']);
+        Route::post('/pp', ['as' => 'pp','uses' => 'ClientController@pp']);
+        Route::get('/pp/{id}', 'ClientController@editContractor');
+        Route::post('/pp/{id}', 'ClientController@updateContractor');
+        Route::delete('/pp/destroy/{id}', 'ClientController@destroyContractor');
 
     });
 
@@ -93,14 +90,11 @@ Route::group(['prefix' => App\Http\Middleware\LocaleMiddleware::getLocale()], fu
         Route::get('/settings', 'ManagerController@settings');
         Route::post('/settings', 'ManagerController@storeSettings');
 
-        Route::get('/contractors', ['as' => 'contractors','uses' => 'ManagerController@contractors']);
-        Route::post('/contractors', ['as' => 'contractors','uses' => 'ManagerController@contractors']);
-        Route::get('/contractors/{id}', 'ManagerController@editContractor');
-        Route::post('/contractors/{id}', 'ManagerController@updateContractor');
-        Route::delete('/contractors/destroy/{id}', 'ManagerController@destroyContractor');
-
-        Route::get('/foods', 'ManagerController@foods');
-        Route::post('/foods', 'ManagerController@storeFoods');
+        Route::get('/pp', ['as' => 'pp','uses' => 'ManagerController@pp']);
+        Route::post('/pp', ['as' => 'pp','uses' => 'ManagerController@pp']);
+        Route::get('/pp/{id}', 'ManagerController@editContractor');
+        Route::post('/pp/{id}', 'ManagerController@updateContractor');
+        Route::delete('/pp/destroy/{id}', 'ManagerController@destroyContractor');
 
     });
 });

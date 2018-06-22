@@ -39,11 +39,9 @@
             @if($right_settings->is_pp_module == 1)
                 @if($user->role_id == Config::get('constants.roles.accountant'))
                 <li class="nav-item">
-                    <a class="btn btn-info btn-lg" href="{{url(App\Http\Middleware\LocaleMiddleware::getLocale().$contractor_link)}}">@lang('messages.contractors')</a>
+                    <a class="btn btn-info btn-lg" href="{{url(App\Http\Middleware\LocaleMiddleware::getLocale().$pp_link)}}">@lang('messages.contractors_and_foods')</a>
                 </li>
-                <li class="nav-item">
-                    <a class="btn btn-light btn-lg" href="{{url(App\Http\Middleware\LocaleMiddleware::getLocale().$food_link)}}">@lang('messages.foods')</a>
-                </li>
+                
                 @endif
             @endif
             @endisset
