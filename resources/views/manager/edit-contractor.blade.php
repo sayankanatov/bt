@@ -69,13 +69,7 @@
 				            <td>
 				              <input type="number" class="form-control" name="balance{{++$key}}" value="{{$kfood->balance}}">
 				            </td>
-				            <!-- <td>
-				              <form action="{{action('ManagerController@destroyFood', $kfood->food_id)}}" method="post">
-				                @csrf
-				                <input name="_method" type="hidden" value="DELETE">
-				                <button class="btn btn-danger" type="submit">@lang('messages.destroy')</button>
-				              </form>
-				            </td> -->
+				            
 				        </tr>
 		          	@endforeach
 		        @else

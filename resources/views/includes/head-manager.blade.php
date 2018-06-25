@@ -1,6 +1,9 @@
 <div class="col-md-12">
 @if (Route::has('login'))
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+        <span class="navbar-toggler-icon"></span>
+    </button>
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
         
         <ul class="navbar-nav">
@@ -44,10 +47,10 @@
             </li>
         @auth
             <li class="nav-item">
-                <a class="btn btn-primary" style="margin-right:5%;" href="#">{{ \Auth::user()->name }}</a>
+                <a class="btn btn-primary" href="#">{{ \Auth::user()->name }}</a>
             </li>
             <li class="nav-item">
-                <a class="btn btn-danger"  style="margin-left:5%;" href="{{ url('logout') }}" 
+                <a class="btn btn-danger" href="{{ url('logout') }}" 
                             onclick="event.preventDefault();
                             document.getElementById('logout-form').submit();">@lang('messages.logout')
                 </a>

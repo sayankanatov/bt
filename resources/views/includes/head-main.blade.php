@@ -23,10 +23,10 @@
             </li> -->
         @auth
             <li class="nav-item">
-                <a class="btn btn-primary" style="margin-right:5%;" href="#">{{ \Auth::user()->name }}</a>
+                <a class="btn btn-primary" href="#">{{ \Auth::user()->name }}</a>
             </li>
             <li class="nav-item">
-                <a class="btn btn-danger"  style="margin-left:5%;" href="{{ url('logout') }}" 
+                <a class="btn btn-danger" href="{{ url('logout') }}" 
                     onclick="event.preventDefault();
                     document.getElementById('logout-form').submit();">@lang('messages.logout')
                 </a>
